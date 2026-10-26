@@ -50,6 +50,28 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
 
 输出：`src\bin\Release\net472\Sinmai-Assist.dll`，复制到游戏的 `Mods` 目录即可
 
+## 发版（一键打包）
+
+仓库根目录带脚本 `build-release.ps1` / `build-release.cmd`，会自动改版本号、编译、生成 zip：
+
+```powershell
+# 指定版本
+.\build-release.cmd -Version 1.0.1
+
+# 当前版本最后一位 +1
+.\build-release.cmd -Bump
+
+# 顺手覆盖到游戏 Mods 目录（会先备份成 .bak）
+.\build-release.cmd -Bump -Deploy
+
+# 同时 git 提交、打 tag、推送
+.\build-release.cmd -Bump -Commit -Tag -Push
+```
+
+输出：`dist\Sinmai-Assist-v<版本>.zip`（含 DLL + 安装说明）
+
+脚本会自动更新 `AssemblyInfo.cs`、`BuildInfo.cs`、主界面标题和版本信息浮层里的版本号
+
 ## 目录
 
 - `src/SinmaiAssist.Cheat/AutoPlay.cs` — 判定逻辑
