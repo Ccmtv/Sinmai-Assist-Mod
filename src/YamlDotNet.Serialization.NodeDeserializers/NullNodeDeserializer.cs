@@ -1,0 +1,42 @@
+using System;
+using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
+
+namespace YamlDotNet.Serialization.NodeDeserializers;
+
+internal sealed class NullNodeDeserializer : INodeDeserializer
+{
+	public bool Deserialize(IParser parser, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value, ObjectDeserializer rootDeserializer)
+	{
+		value = null;
+		if (parser.Accept<NodeEvent>(out var @event) && NodeIsNull(@event))
+		{
+			parser.SkipThisAndNestedEvents();
+			return true;
+		}
+		return false;
+	}
+
+	private bool NodeIsNull(NodeEvent nodeEvent)
+	{
+		if (nodeEvent.Tag == "tag:yaml.org,2002:null")
+		{
+			return true;
+		}
+		if (nodeEvent is Scalar { Style: ScalarStyle.Plain, IsKey: false } scalar)
+		{
+			string value = scalar.Value;
+			switch (value)
+			{
+			default:
+				return value == "NULL";
+			case "":
+			case "~":
+			case "null":
+			case "Null":
+				return true;
+			}
+		}
+		return false;
+	}
+}
