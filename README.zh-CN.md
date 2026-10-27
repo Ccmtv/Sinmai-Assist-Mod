@@ -6,6 +6,10 @@
 
 > 说明：本仓库源码是从原版 `Sinmai-Assist.dll` 反编译后修改得到的（原仓库没有与该 DLL 完全对应的源码快照）如果你想向上游提交，建议 fork 上游仓库后只移植 `src/SinmaiAssist.Cheat/AutoPlay.cs` 和 `src/SinmaiAssist.GUI/` 下的改动
 
+<p align="center">
+  <img src="docs/panel.png" alt="Sinmai-Assist 面板" width="360">
+</p>
+
 ## 改了什么
 
 ### 1. Autoplay 只改判定，不自动演奏

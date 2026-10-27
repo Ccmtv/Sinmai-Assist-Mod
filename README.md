@@ -19,6 +19,10 @@ input keeps working and stars (slides) must be performed manually. If you want t
 > Unofficial fan project. Not affiliated with SEGA. Use at your own risk; see
 > [Disclaimer](#disclaimer).
 
+<p align="center">
+  <img src="docs/panel.png" alt="Sinmai-Assist panel" width="360">
+</p>
+
 ---
 
 ## Features
