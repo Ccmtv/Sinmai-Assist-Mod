@@ -1,39 +1,232 @@
-# Sinmai-Assist（判定增强 + 中文界面版）
+# Sinmai-Assist
 
-基于 [WYH2004-MC/Sinmai-Assist](https://github.com/WYH2004-MC/Sinmai-Assist) 1.0.0（commit `787a437`）的修改版，适用于 maimai DX Sinmai（MelonLoader）
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-> 说明：本仓库源码是从原版 `Sinmai-Assist.dll` 反编译后修改得到的（原仓库没有与该 DLL 完全对应的源码快照）如果你想向上游提交，建议 fork 上游仓库后只移植 `src/SinmaiAssist.Cheat/AutoPlay.cs` 和 `src/SinmaiAssist.GUI/` 下的改动
+[![Release](https://img.shields.io/github/v/release/Ccmtv/Sinmai-Assist-Mod?label=release)](https://github.com/Ccmtv/Sinmai-Assist-Mod/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%20x64-blue)](#requirements)
+[![MelonLoader](https://img.shields.io/badge/MelonLoader-0.6.x-6a4c93)](https://github.com/LavaGang/MelonLoader)
+[![Game](https://img.shields.io/badge/maimai%20DX-Sinmai-orange)](#requirements)
+[![License](https://img.shields.io/badge/license-see%20notes-lightgrey)](#license)
 
-## 改了什么
+A **MelonLoader** mod for SEGA's arcade rhythm game **maimai DX (Sinmai)** that adds a
+**judgment-only autoplay** mode: you play the chart yourself, and every successful hit is
+forced to the selected judgment (`Critical`, `Perfect`, `Great`, ...).
 
-### 1. Autoplay 只改判定，不自动演奏
+Unlike the original autoplay, it does **not** drive the game's own AutoPlay state, so touch
+input keeps working and stars (slides) must be performed manually. If you want the old
+"play the chart for me" behaviour, a single toggle restores it.
 
-- 不再强制游戏进入 AutoPlay 状态，触摸输入恢复正常（原版会每帧把所有触摸区标记为已使用）
-- tap / hold / break 由玩家自己打；命中后判定强制为所选模式（Critical / Perfect / Great / Good / 随机…）
-- 星星（slide）必须自己滑：不滑或滑太晚会 Miss，滑完才给判定
-- touch 触摸圆点保持自动判定，不需要按
-- 没打中仍然正常 Miss
+> Unofficial fan project. Not affiliated with SEGA. Use at your own risk; see
+> [Disclaimer](#disclaimer).
 
-### 2. UI
+---
 
-- 深色半透明面板 + 圆角卡片 + 粉色/青色强调色
-- 全部面板中文化，使用系统「微软雅黑」动态字体
-- 面板可拖动，内容支持滚轮滚动
+## Features
 
-### 3. 行为开关
+- **Judgment-only mode (default)**: tap / hold / break are played by you, hits are forced
+  to the selected judgment, missed notes still count as MISS
+- **Stars are manual**: the slide follows your hand and is only judged when you complete it
+- **Touch tap notes stay automatic**, so they do not get in the way of your slides
+- **Classic full autoplay toggle**: one switch restores the original Sinmai-Assist
+  behaviour (all notes auto-played, stars auto-slide, touch input blocked)
+- **8 judgment modes** plus `None`
+- **Dark Chinese UI**: rounded panels, pink / cyan accents, Microsoft YaHei, draggable,
+  scrollable
+- **Config persisted** to `Sinmai-Assist/Config.yml`
+- Only `Sinmai-Assist.dll` is added; no game files are modified
 
-「自动演奏」面板顶部有 **「原版全自动（旧行为）」** 开关：
+---
 
-- 打开：恢复原版 Sinmai-Assist 行为（自动打所有 note、星星自动滑、触摸被屏蔽）
-- 关闭：仅判定模式（自己打、命中后只改判定、星星自己滑）
+## Requirements
 
-开关会写入 `Sinmai-Assist/Config.yml` 的 `cheat.classicAutoPlay`，重启游戏后保持
+| Item | Notes |
+| --- | --- |
+| **Game** | maimai DX `Sinmai.exe` (SDGB package). Tested on the current SDGB build; other versions may contain different method names/IL. |
+| **Loader** | **MelonLoader 0.6.x, x64** |
+| **Runtime** | The game's Unity Mono runtime; the mod targets **.NET Framework 4.7.2** |
+| **OS** | Windows x64 |
 
-## 构建
+This mod is a modified build of
+[WYH2004-MC/Sinmai-Assist](https://github.com/WYH2004-MC/Sinmai-Assist) `1.0.0` (commit
+`787a437`). Other mods in `Mods/` are not required.
 
-需要 .NET SDK 8（或更高）
+---
 
-本仓库不包含游戏 DLL构建时用 `GameDir` / `MelonDir` 指向游戏目录：
+## Installation
+
+1. **Install MelonLoader 0.6.x** into the game root (the folder containing `Sinmai.exe`).
+
+2. **Copy the mod**:
+
+   ```text
+   <game>/
+   └── Mods/
+       └── Sinmai-Assist.dll
+   ```
+
+3. **Launch the game** and check `MelonLoader/Latest.log`:
+
+   ```text
+   [Sinmai-Assist] Config Load Complete.
+   [Sinmai-Assist] Loading completed
+   ```
+
+4. Press **`Backspace`** to show/hide the panel.
+
+A ready-to-use build is attached to
+[Releases](https://github.com/Ccmtv/Sinmai-Assist-Mod/releases).
+
+---
+
+## Usage
+
+| Key | Action |
+| --- | --- |
+| `Backspace` | Show / hide the panel |
+| `F` | `Critical` (AP+) mode |
+| `O` | `Great` mode |
+| `P` | `Good` mode |
+| `K` | `Random` mode |
+| `G` | `RandomAllPerfect` mode |
+| `H` | `RandomFullComboPlus` mode |
+| `J` | `RandomFullCombo` mode |
+| `N` | `None` (disable) |
+
+All keys can be changed in `Sinmai-Assist/KeyBindConfig.yml`.
+
+At the top of the **自动演奏** panel there is a **原版全自动（旧行为）** switch:
+
+- **ON** — classic full autoplay: every note is played for you, stars auto-slide, touch
+  input is blocked
+- **OFF** — judgment-only mode: you play, the mod only rewrites the judgment
+
+The choice is saved to `cheat.classicAutoPlay` in `Sinmai-Assist/Config.yml`.
+
+---
+
+## Modes
+
+| Mode | Behaviour | Typical result |
+| --- | --- | --- |
+| **Critical** | Every hit becomes `Critical` | AP+ |
+| **Perfect** | Random `FastPerfect2nd` / `LatePerfect2nd` | AP |
+| **Great** | Random `FastGreat` / `LateGreat` | Full Combo |
+| **Good** | Random `FastGood` / `LateGood` | Full Combo |
+| **Random** | Uniform pick from 10 timings (includes `TooLate`) | Random |
+| **RandomAllPerfect** | Random from the Perfect/Critical range | AP (timing varies) |
+| **RandomFullComboPlus** | ~99% Perfect/Critical, ~1% Great | Full Combo+ |
+| **RandomFullCombo** | ~92% Perfect, ~6% Great, ~2% Good | Full Combo |
+| **None** | No judgment override | Normal play |
+
+In judgment-only mode the mode only decides **what a successful hit becomes**; it never
+plays notes for you. In classic mode it decides what the auto-played notes become.
+
+---
+
+## Configuration
+
+Generated on first launch at `Sinmai-Assist/Config.yml`:
+
+```yaml
+cheat:
+  autoPlay: true          # enable the autoplay patches
+  classicAutoPlay: false  # false = judgment-only, true = classic full autoplay
+```
+
+Hotkeys are in `Sinmai-Assist/KeyBindConfig.yml`:
+
+```yaml
+sinmaiAssist:
+  showUserPanel: Backspace
+autoPlay:
+  critical: F
+  perfect: None
+  great: O
+  good: P
+  random: K
+  randomAllPerfect: G
+  randomFullComboPlus: H
+  randomFullCombo: J
+  none: N
+```
+
+Changes made in the panel are written back to the config. Editing the file manually
+requires a game restart.
+
+---
+
+## How it works
+
+The mod is a Harmony patch set around the game's own note pipeline:
+
+1. **`GameManager.IsAutoPlay`** — in judgment-only mode it is forced to `false`, so the
+   game keeps its normal input path (the game marks all 35 touch areas as "used" while
+   AutoPlay is on). In classic mode it returns the original autoplay value.
+
+2. **`GameManager.AutoJudge`** — a postfix maps the selected mode to a
+   `NoteJudge.ETiming` (`Critical`, `LateGreat`, random, ...).
+
+3. **`NoteJudge.GetJudgeTiming`** — in judgment-only mode, a postfix rewrites valid hits
+   (`FastGood` ... `LateGood`) to the selected judgment. `End`, `TooFast` and `TooLate`
+   are passed through, so missed notes still MISS.
+
+4. **`NoteBase.SetAutoPlayJudge`** — in judgment-only mode it only auto-judges
+   `TouchNoteB` (touch tap); tap / hold / break notes are left to the player.
+
+5. **`SlideRoot.Judge`** — when the player actually completes a slide inside the judge
+   window, the result is forced to the selected judgment. Not sliding leaves the note to
+   the normal too-late path.
+
+6. **Classic mode** re-enables the original `TouchNoteB.Judge` / `TouchNoteB.NoteCheck`
+   patches and forces `IsAutoPlay()` back to the autoplay value.
+
+The full source is in `src/`; the patches are in
+[`src/SinmaiAssist.Cheat/AutoPlay.cs`](src/SinmaiAssist.Cheat/AutoPlay.cs).
+
+> Note: this source tree was reconstructed by decompiling the original `Sinmai-Assist.dll`
+> (the upstream repository has no matching source snapshot) and then modified. Upstream
+> code is credited below.
+
+---
+
+## Building from source
+
+### Requirements
+
+- .NET SDK 8 (or newer)
+- The game's managed assemblies (`Sinmai_Data/Managed`)
+- `MelonLoader/net35` (`MelonLoader.dll`, `0Harmony.dll`)
+
+### One-click build
+
+```powershell
+# Bump the patch version, build and package
+.\build-release.cmd -Bump
+
+# Also copy the DLL into the game's Mods folder (previous DLL is kept as .bak)
+.\build-release.cmd -Bump -Deploy
+
+# Build, commit, tag and push
+.\build-release.cmd -Bump -Commit -Tag -Push
+```
+
+| Option | Description |
+| --- | --- |
+| `-Version 1.0.1` | Explicit version |
+| `-Bump` | Increment the last version segment |
+| `-Deploy` | Copy the DLL to `<game>/Mods` |
+| `-Commit` / `-Tag` / `-Push` | Git operations |
+| `-Dotnet <path>` | Use a specific `dotnet.exe` |
+
+Output: `dist/Sinmai-Assist-v<version>.zip` (DLL + install notes).
+
+The script updates the version in `AssemblyInfo.cs`, `BuildInfo.cs`, the panel header and
+the version overlay, then calls `dotnet build`.
+
+If `dotnet` is not on `PATH`, the script falls back to
+`<game>/Sinmai-Assist-build/dotnet/dotnet.exe`.
+
+### Manual build
 
 ```powershell
 dotnet build .\src\Sinmai-Assist.csproj -c Release `
@@ -41,51 +234,69 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
   -p:MelonDir="D:\GameVideos\game\MAIMAI\sdgb"
 ```
 
-默认值 `..\..` 表示仓库放在 `sdgb\Sinmai-Assist-source`（与 `Sinmai_Data`、`MelonLoader` 同级）
+---
 
-需要的引用：
+## Compatibility and known issues
 
-- `Sinmai_Data\Managed\*.dll`（Assembly-CSharp、UnityEngine 各模块、AMDaemon.NET、ChimeLib.NET 等）
-- `MelonLoader\net35\MelonLoader.dll`、`0Harmony.dll`
+- **Touch hold notes are still manual.** Only touch tap (the round notes) are auto-judged;
+  long touch holds must be pressed by you.
+- **Mode can reset when a song starts.** The game sets its own `AutoPlay` to `None` on
+  song start; enable **锁定模式** (lock mode) in the panel, or pick a mode after the song
+  starts.
+- **Classic mode blocks touch input by design.** That is the original autoplay behaviour.
+- **Tested on the SDGB build only.** Game updates can rename methods; if patching fails,
+  `MelonLoader/Latest.log` will contain a `Patch ... failed` entry.
+- **Judgment-only mode still records normal scores.** It is not a "no-save" practice mode.
+- Do not use this in multiplayer or on public leaderboards.
 
-输出：`src\bin\Release\net472\Sinmai-Assist.dll`，复制到游戏的 `Mods` 目录即可
+---
 
-## 发版（一键打包）
+## FAQ
 
-仓库根目录带脚本 `build-release.ps1` / `build-release.cmd`，会自动改版本号、编译、生成 zip：
+**The panel does not appear.**
+Press `Backspace`. Check `MelonLoader/Latest.log` for `[Sinmai-Assist]` and make sure
+`Config.yml` has `modSetting.showPanel: true`.
 
-```powershell
-# 指定版本
-.\build-release.cmd -Version 1.0.1
+**I touch the screen but nothing happens.**
+The classic toggle is probably ON. Turn off **原版全自动（旧行为）** in the panel.
 
-# 当前版本最后一位 +1
-.\build-release.cmd -Bump
+**Stars are not judged automatically.**
+Correct — in judgment-only mode you have to slide them. The result is forced only after the
+slide is completed inside the judge window.
 
-# 顺手覆盖到游戏 Mods 目录（会先备份成 .bak）
-.\build-release.cmd -Bump -Deploy
+**Are scores saved?**
+Yes. The game judges notes through its normal path; only the judgment value is rewritten.
 
-# 同时 git 提交、打 tag、推送
-.\build-release.cmd -Bump -Commit -Tag -Push
-```
+**Does this work with other Sinmai mods?**
+It only adds Harmony patches and a panel. It can coexist with other MelonLoader mods, but
+conflicting patches on the same methods may win depending on load order.
 
-输出：`dist\Sinmai-Assist-v<版本>.zip`（含 DLL + 安装说明）
+---
 
-脚本会自动更新 `AssemblyInfo.cs`、`BuildInfo.cs`、主界面标题和版本信息浮层里的版本号
+## Disclaimer
 
-## 目录
+This is an unofficial fan-made mod for research and personal offline use. It is **not
+affiliated with, endorsed by, or supported by SEGA**. Using it may violate the game's terms
+of service. The authors take no responsibility for bans, data loss, or damage caused by its
+use.
 
-- `src/SinmaiAssist.Cheat/AutoPlay.cs` — 判定逻辑
-- `src/SinmaiAssist.GUI/` — 界面（Style / MainGUI / 各面板）
-- `src/SinmaiAssist.Config/`、`src/SinmaiAssist.Common/`、`src/SinmaiAssist.Fix/` 等 — 原版功能
-- `src/YamlDotNet*` — 内嵌的 YamlDotNet（MIT）
+No game assets are included in this repository.
 
-## 已知限制
+---
 
-- touch hold（长按）目前仍需自己按；只有 touch tap 圆点是自动判定
-- 如果进歌后模式被游戏重置，请在面板里打开「锁定模式」
+## Credits
 
-## 许可与致谢
+- **WYH2004 (Slim) & Error063** — original
+  [Sinmai-Assist](https://github.com/WYH2004-MC/Sinmai-Assist)
+- [MelonLoader](https://github.com/LavaGang/MelonLoader) and HarmonyX
+- [YamlDotNet](https://github.com/aaubry/YamlDotNet) — MIT
 
-- 原项目：[WYH2004-MC/Sinmai-Assist](https://github.com/WYH2004-MC/Sinmai-Assist)上游仓库未见 LICENSE 文件，公开再分发前请先征得原作者同意
-- [YamlDotNet](https://github.com/aaubry/YamlDotNet)：MIT License
-- 本仓库不包含任何游戏资源或游戏 DLL
+---
+
+## License
+
+This repository does not grant a license. It is a modified build of Sinmai-Assist, whose
+upstream repository does not include a `LICENSE` file, so redistribution should be cleared
+with the original authors first.
+
+`YamlDotNet` is licensed under the MIT License.
