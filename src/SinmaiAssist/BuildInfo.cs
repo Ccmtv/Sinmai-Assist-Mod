@@ -4,7 +4,7 @@ public static class BuildInfo
 {
 	public const string CommitHash = "787a437";
 
-	public const string BuildDate = "2025-11-29T12:08:47.5657070+08:00";
+	public const string BuildDate = "2026-10-30T03:25:31.673+08:00";
 
 	public const string Name = "Sinmai-Assist";
 
@@ -14,7 +14,7 @@ public static class BuildInfo
 
 	public const string Company = "Wahleak Technology()";
 
-	public const string Version = "1.0.0";
+	public const string Version = "1.1.0";
 
 	public const string DownloadLink = null;
 }
