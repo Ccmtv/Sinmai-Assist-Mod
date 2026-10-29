@@ -7,7 +7,12 @@
 > 说明：本仓库源码是从原版 `Sinmai-Assist.dll` 反编译后修改得到的（原仓库没有与该 DLL 完全对应的源码快照）如果你想向上游提交，建议 fork 上游仓库后只移植 `src/SinmaiAssist.Cheat/AutoPlay.cs` 和 `src/SinmaiAssist.GUI/` 下的改动
 
 <p align="center">
-  <img src="docs/panel.png" alt="Sinmai-Assist 面板" width="360">
+  <a href="docs/panel-zh-autoplay.png"><img src="docs/panel-zh-autoplay.png" alt="中文自动演奏面板" width="360"></a>
+  <a href="docs/panel-en-autoplay.png"><img src="docs/panel-en-autoplay.png" alt="英文自动演奏面板" width="360"></a>
+</p>
+<p align="center">
+  <a href="docs/panel-zh-custom.png"><img src="docs/panel-zh-custom.png" alt="中文自定义 Autoplay 面板" width="360"></a>
+  <a href="docs/panel-en-custom.png"><img src="docs/panel-en-custom.png" alt="英文自定义 Autoplay 面板" width="360"></a>
 </p>
 
 ## 改了什么

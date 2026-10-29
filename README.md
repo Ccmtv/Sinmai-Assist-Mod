@@ -22,7 +22,12 @@ input keeps working and stars (slides) must be performed manually. If you want t
 > [Disclaimer](#disclaimer).
 
 <p align="center">
-  <img src="docs/panel.png" alt="Sinmai-Assist panel" width="360">
+  <a href="docs/panel-zh-autoplay.png"><img src="docs/panel-zh-autoplay.png" alt="Chinese Auto Play panel" width="360"></a>
+  <a href="docs/panel-en-autoplay.png"><img src="docs/panel-en-autoplay.png" alt="English Auto Play panel" width="360"></a>
+</p>
+<p align="center">
+  <a href="docs/panel-zh-custom.png"><img src="docs/panel-zh-custom.png" alt="Chinese Custom Autoplay panel" width="360"></a>
+  <a href="docs/panel-en-custom.png"><img src="docs/panel-en-custom.png" alt="English Custom Autoplay panel" width="360"></a>
 </p>
 
 ---
