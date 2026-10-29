@@ -1,4 +1,4 @@
-﻿using AMDaemon.Allnet;
+using AMDaemon.Allnet;
 using Mai2.Mai2Cue;
 using Mai2.Voice_000001;
 using Manager;
@@ -52,14 +52,14 @@ public class DummyLoginPanel
     private static void LogoutComplete()
     {
         SoundManager.PlayVoice(Mai2.Voice_000001.Cue.VO_000012, 1);
-        GameMessageManager.SendMessage(0, "Id: " + DummyUserId + " 登出成功。");
-        GameMessageManager.SendMessage(1, "Id: " + DummyUserId + " 登出成功。");
+        GameMessageManager.SendMessage(0, I18n.T("Id: " + DummyUserId + " 登出成功。"));
+        GameMessageManager.SendMessage(1, I18n.T("Id: " + DummyUserId + " 登出成功。"));
     }
 
     private static void LogoutFailed(PacketStatus status)
     {
         SoundManager.PlaySE(Mai2.Mai2Cue.Cue.SE_ENTRY_AIME_ERROR, 1);
-        GameMessageManager.SendMessage(0, "Id: " + DummyUserId + " 登出失败。");
-        GameMessageManager.SendMessage(1, "Id: " + DummyUserId + " 登出失败。");
+        GameMessageManager.SendMessage(0, I18n.T("Id: " + DummyUserId + " 登出失败。"));
+        GameMessageManager.SendMessage(1, I18n.T("Id: " + DummyUserId + " 登出失败。"));
     }
 }
