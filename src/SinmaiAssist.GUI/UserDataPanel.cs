@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using MAI2.Util;
 using Manager;
 using MelonLoader;
@@ -28,7 +28,7 @@ public class UserDataPanel
 
     public static void OnGUI()
     {
-        GUILayout.Label("用户信息", MainGUI.Style.Title);
+        I18n.Label("用户信息", MainGUI.Style.Title);
         try
         {
             _player1 = Singleton<UserDataManager>.Instance.GetUserData(0L);
@@ -37,20 +37,20 @@ public class UserDataPanel
         catch (Exception)
         {
         }
-        GUILayout.Label($"1P：{_player1.Detail.UserName}（{_player1.Detail.UserID}）", MainGUI.Style.Text);
-        GUILayout.Label($"2P：{_player2.Detail.UserName}（{_player2.Detail.UserID}）", MainGUI.Style.Text);
+        I18n.Label($"1P：{_player1.Detail.UserName}（{_player1.Detail.UserID}）", MainGUI.Style.Text);
+        I18n.Label($"2P：{_player2.Detail.UserName}（{_player2.Detail.UserID}）", MainGUI.Style.Text);
 
-        GUILayout.Label("添加收藏品", MainGUI.Style.Title);
+        I18n.Label("添加收藏品", MainGUI.Style.Title);
         foreach (CollectionType value in Enum.GetValues(typeof(CollectionType)))
         {
             GUILayout.BeginHorizontal();
             int num = (int)value;
-            GUILayout.Label(TypeName(value), new GUIStyle(MainGUI.Style.Text)
+            I18n.Label(TypeName(value), new GUIStyle(MainGUI.Style.Text)
             {
                 fixedWidth = 56f
             });
             _userInputId[num] = GUILayout.TextField(_userInputId[num], MainGUI.Style.TextField, GUILayout.Height(26f));
-            if (GUILayout.Button("添加", new GUIStyle(MainGUI.Style.Button)
+            if (I18n.Button("添加", new GUIStyle(MainGUI.Style.Button)
             {
                 fixedWidth = 56f
             }, GUILayout.Height(26f)))
@@ -60,16 +60,16 @@ public class UserDataPanel
             }
             GUILayout.EndHorizontal();
         }
-        _isNewItem = GUILayout.Toggle(_isNewItem, "标记为新物品", MainGUI.Style.Toggle, GUILayout.Height(26f));
+        _isNewItem = I18n.Toggle(_isNewItem, "标记为新物品", MainGUI.Style.Toggle, GUILayout.Height(26f));
 
-        GUILayout.Label("解锁乐曲", MainGUI.Style.Title);
+        I18n.Label("解锁乐曲", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        GUILayout.Label("乐曲 ID", new GUIStyle(MainGUI.Style.Text)
+        I18n.Label("乐曲 ID", new GUIStyle(MainGUI.Style.Text)
         {
             fixedWidth = 56f
         });
         _userInputId[0] = GUILayout.TextField(_userInputId[0], MainGUI.Style.TextField, GUILayout.Height(26f));
-        if (GUILayout.Button("添加", new GUIStyle(MainGUI.Style.Button)
+        if (I18n.Button("添加", new GUIStyle(MainGUI.Style.Button)
         {
             fixedWidth = 56f
         }, GUILayout.Height(26f)))
@@ -79,14 +79,14 @@ public class UserDataPanel
         }
         GUILayout.EndHorizontal();
 
-        GUILayout.Label("MaiMile", MainGUI.Style.Title);
+        I18n.Label("MaiMile", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        GUILayout.Label("数量", new GUIStyle(MainGUI.Style.Text)
+        I18n.Label("数量", new GUIStyle(MainGUI.Style.Text)
         {
             fixedWidth = 56f
         });
         _userInputId[6] = GUILayout.TextField(_userInputId[6], MainGUI.Style.TextField, GUILayout.Height(26f));
-        if (GUILayout.Button("添加", new GUIStyle(MainGUI.Style.Button)
+        if (I18n.Button("添加", new GUIStyle(MainGUI.Style.Button)
         {
             fixedWidth = 56f
         }, GUILayout.Height(26f)))
@@ -96,14 +96,14 @@ public class UserDataPanel
         }
         GUILayout.EndHorizontal();
 
-        GUILayout.Label("Kaleidx Scope", MainGUI.Style.Title);
+        I18n.Label("Kaleidx Scope", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        GUILayout.Label("门", new GUIStyle(MainGUI.Style.Text)
+        I18n.Label("门", new GUIStyle(MainGUI.Style.Text)
         {
             fixedWidth = 56f
         });
         _userInputId[7] = GUILayout.TextField(_userInputId[7], MainGUI.Style.TextField, GUILayout.Height(26f));
-        if (GUILayout.Button("添加", new GUIStyle(MainGUI.Style.Button)
+        if (I18n.Button("添加", new GUIStyle(MainGUI.Style.Button)
         {
             fixedWidth = 56f
         }, GUILayout.Height(26f)))
@@ -113,12 +113,12 @@ public class UserDataPanel
         }
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
-        GUILayout.Label("钥匙", new GUIStyle(MainGUI.Style.Text)
+        I18n.Label("钥匙", new GUIStyle(MainGUI.Style.Text)
         {
             fixedWidth = 56f
         });
         _userInputId[8] = GUILayout.TextField(_userInputId[8], MainGUI.Style.TextField, GUILayout.Height(26f));
-        if (GUILayout.Button("添加", new GUIStyle(MainGUI.Style.Button)
+        if (I18n.Button("添加", new GUIStyle(MainGUI.Style.Button)
         {
             fixedWidth = 56f
         }, GUILayout.Height(26f)))
@@ -128,13 +128,13 @@ public class UserDataPanel
         }
         GUILayout.EndHorizontal();
 
-        GUILayout.Label("用户数据备份", MainGUI.Style.Title);
+        I18n.Label("用户数据备份", MainGUI.Style.Title);
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("导出 1P", MainGUI.Style.Button, GUILayout.Height(30f)))
+        if (I18n.Button("导出 1P", MainGUI.Style.Button, GUILayout.Height(30f)))
         {
             User.ExportBackupData(0L);
         }
-        if (GUILayout.Button("导出 2P", MainGUI.Style.Button, GUILayout.Height(30f)))
+        if (I18n.Button("导出 2P", MainGUI.Style.Button, GUILayout.Height(30f)))
         {
             User.ExportBackupData(1L);
         }
@@ -145,13 +145,18 @@ public class UserDataPanel
     {
         return type switch
         {
-            CollectionType.Icon => "图标",
-            CollectionType.Plate => "铭牌",
-            CollectionType.Title => "称号",
-            CollectionType.Partner => "伙伴",
-            CollectionType.Frame => "边框",
+            CollectionType.Icon => I18n.T("图标", "Icon"),
+            CollectionType.Plate => I18n.T("铭牌", "Plate"),
+            CollectionType.Title => I18n.T("称号", "Title"),
+            CollectionType.Partner => I18n.T("伙伴", "Partner"),
+            CollectionType.Frame => I18n.T("边框", "Frame"),
             _ => type.ToString()
         };
+    }
+
+    private static void SendMessage(long index, string text)
+    {
+        GameMessageManager.SendMessage((int)index, I18n.T(text));
     }
 
     private static void AddCollections(long index, CollectionType type, string input)
@@ -159,7 +164,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index, "游客账号\n无法添加收藏品");
+            SendMessage(index, "游客账号\n无法添加收藏品");
             return;
         }
         try
@@ -168,21 +173,21 @@ public class UserDataPanel
             {
                 if (userData.AddCollections((UserData.Collection)type, result, _isNewItem))
                 {
-                    GameMessageManager.SendMessage((int)index, $"添加收藏品\n{TypeName(type)} {result}" + (_isNewItem ? "（新物品）" : ""));
+                    SendMessage(index, $"添加收藏品\n{TypeName(type)} {result}" + (_isNewItem ? "（新物品）" : ""));
                 }
                 else
                 {
-                    GameMessageManager.SendMessage((int)index, $"添加失败或已拥有\n{TypeName(type)} {result}");
+                    SendMessage(index, $"添加失败或已拥有\n{TypeName(type)} {result}");
                 }
             }
             else
             {
-                GameMessageManager.SendMessage((int)index, "无效 ID\n" + input);
+                SendMessage(index, "无效 ID\n" + input);
             }
         }
         catch (Exception obj)
         {
-            GameMessageManager.SendMessage((int)index, "未知错误");
+            SendMessage(index, "未知错误");
             MelonLogger.Error(obj);
         }
     }
@@ -192,7 +197,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index, "游客账号\n无法解锁乐曲");
+            SendMessage(index, "游客账号\n无法解锁乐曲");
             return;
         }
         try
@@ -203,32 +208,32 @@ public class UserDataPanel
                 {
                     if (userData.AddUnlockMusic(UserData.MusicUnlock.Base, result))
                     {
-                        GameMessageManager.SendMessage((int)index, $"解锁乐曲\n{result}");
+                        SendMessage(index, $"解锁乐曲\n{result}");
                     }
                     else
                     {
-                        GameMessageManager.SendMessage((int)index, $"解锁失败或已解锁\n{result}");
+                        SendMessage(index, $"解锁失败或已解锁\n{result}");
                     }
                 }
                 else if (!userData.IsUnlockMusic(UserData.MusicUnlock.Master, result))
                 {
                     userData.AddUnlockMusic(UserData.MusicUnlock.Master, result);
                     userData.AddUnlockMusic(UserData.MusicUnlock.ReMaster, result);
-                    GameMessageManager.SendMessage((int)index, $"解锁 Master\n{result}");
+                    SendMessage(index, $"解锁 Master\n{result}");
                 }
                 else
                 {
-                    GameMessageManager.SendMessage((int)index, $"解锁 Master 失败或已解锁\n{result}");
+                    SendMessage(index, $"解锁 Master 失败或已解锁\n{result}");
                 }
             }
             else
             {
-                GameMessageManager.SendMessage((int)index, "无效 ID\n" + input);
+                SendMessage(index, "无效 ID\n" + input);
             }
         }
         catch (Exception obj)
         {
-            GameMessageManager.SendMessage((int)index, "未知错误");
+            SendMessage(index, "未知错误");
             MelonLogger.Error(obj);
         }
     }
@@ -238,12 +243,12 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (SinmaiAssist.GameVersion < 25000)
         {
-            GameMessageManager.SendMessage((int)index, "当前版本不支持 MaiMile");
+            SendMessage(index, "当前版本不支持 MaiMile");
             return;
         }
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index, "游客账号\n无法添加 MaiMile");
+            SendMessage(index, "游客账号\n无法添加 MaiMile");
             return;
         }
         try
@@ -257,16 +262,16 @@ public class UserDataPanel
                 }
                 int num = point + result;
                 userData.AddPresentMile(result);
-                GameMessageManager.SendMessage((int)index, $"添加 {result} MaiMile\n（{point} -> {num}）");
+                SendMessage(index, $"添加 {result} MaiMile\n（{point} -> {num}）");
             }
             else
             {
-                GameMessageManager.SendMessage((int)index, "无效的 MaiMile 数量\n" + input);
+                SendMessage(index, "无效的 MaiMile 数量\n" + input);
             }
         }
         catch (Exception obj)
         {
-            GameMessageManager.SendMessage((int)index, "未知错误");
+            SendMessage(index, "未知错误");
             MelonLogger.Error(obj);
         }
     }
@@ -276,7 +281,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index, "游客账号\n无法添加门");
+            SendMessage(index, "游客账号\n无法添加门");
             return;
         }
         try
@@ -284,16 +289,16 @@ public class UserDataPanel
             if (int.TryParse(input, out var result))
             {
                 userData.AddKaleidxScopeGate(result);
-                GameMessageManager.SendMessage((int)index, $"添加 Kaleidx Scope 门\n{result}");
+                SendMessage(index, $"添加 Kaleidx Scope 门\n{result}");
             }
             else
             {
-                GameMessageManager.SendMessage((int)index, "无效 ID\n" + input);
+                SendMessage(index, "无效 ID\n" + input);
             }
         }
         catch (Exception obj)
         {
-            GameMessageManager.SendMessage((int)index, "未知错误");
+            SendMessage(index, "未知错误");
             MelonLogger.Error(obj);
         }
     }
@@ -303,7 +308,7 @@ public class UserDataPanel
         UserData userData = Singleton<UserDataManager>.Instance.GetUserData(index);
         if (userData.IsGuest())
         {
-            GameMessageManager.SendMessage((int)index, "游客账号\n无法添加钥匙");
+            SendMessage(index, "游客账号\n无法添加钥匙");
             return;
         }
         try
@@ -311,16 +316,16 @@ public class UserDataPanel
             if (int.TryParse(input, out var result))
             {
                 userData.AddKaleidxScopeKey(result);
-                GameMessageManager.SendMessage((int)index, $"添加 Kaleidx Scope 钥匙\n{result}");
+                SendMessage(index, $"添加 Kaleidx Scope 钥匙\n{result}");
             }
             else
             {
-                GameMessageManager.SendMessage((int)index, "无效 ID\n" + input);
+                SendMessage(index, "无效 ID\n" + input);
             }
         }
         catch (Exception obj)
         {
-            GameMessageManager.SendMessage((int)index, "未知错误");
+            SendMessage(index, "未知错误");
             MelonLogger.Error(obj);
         }
     }

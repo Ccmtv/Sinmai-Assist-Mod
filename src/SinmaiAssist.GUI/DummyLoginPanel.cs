@@ -1,4 +1,4 @@
-using AMDaemon.Allnet;
+﻿using AMDaemon.Allnet;
 using Mai2.Mai2Cue;
 using Mai2.Voice_000001;
 using Manager;
@@ -22,9 +22,9 @@ public class DummyLoginPanel
 
     public static void OnGUI()
     {
-        GUILayout.Label("卡号", MainGUI.Style.Title);
+        I18n.Label("卡号", MainGUI.Style.Title);
         DummyLoginCode = GUILayout.TextArea(DummyLoginCode, MainGUI.Style.TextField, GUILayout.Height(90f));
-        if (GUILayout.Button("卡号登录", MainGUI.Style.Button, GUILayout.Height(32f)))
+        if (I18n.Button("卡号登录", MainGUI.Style.Button, GUILayout.Height(32f)))
         {
             CodeLoginFlag = true;
             if (SinmaiAssist.GameID != "SDGB")
@@ -32,9 +32,9 @@ public class DummyLoginPanel
                 DummyAimeLogin.ReadCard();
             }
         }
-        GUILayout.Label("用户 ID", MainGUI.Style.Title);
+        I18n.Label("用户 ID", MainGUI.Style.Title);
         DummyUserId = GUILayout.TextField(DummyUserId, MainGUI.Style.TextField, GUILayout.Height(28f));
-        if (GUILayout.Button("用户 ID 登录", MainGUI.Style.Button, GUILayout.Height(32f)))
+        if (I18n.Button("用户 ID 登录", MainGUI.Style.Button, GUILayout.Height(32f)))
         {
             UserIdLoginFlag = true;
             if (SinmaiAssist.GameID != "SDGB")
@@ -42,8 +42,8 @@ public class DummyLoginPanel
                 DummyAimeLogin.ReadCard("12312312312312312312", DummyLoginCode);
             }
         }
-        GUILayout.Label($"AMDaemon 启动时间：{Auth.AuthTime}", MainGUI.Style.Muted);
-        if (SinmaiAssist.GameID == "SDGB" && GUILayout.Button("用户登出", MainGUI.Style.Button, GUILayout.Height(32f)))
+        I18n.Label($"AMDaemon 启动时间：{Auth.AuthTime}", MainGUI.Style.Muted);
+        if (SinmaiAssist.GameID == "SDGB" && I18n.Button("用户登出", MainGUI.Style.Button, GUILayout.Height(32f)))
         {
             PacketHelper.StartPacket(new UserLogout(ulong.Parse(DummyUserId), Auth.AuthTime, "", LogoutComplete, LogoutFailed));
         }

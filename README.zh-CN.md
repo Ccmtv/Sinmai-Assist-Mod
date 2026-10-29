@@ -1,4 +1,4 @@
-# Sinmai-Assist（判定增强 + 中文界面版）
+# Sinmai-Assist（判定增强 + 自定义 Autoplay + 中英双语界面）
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
@@ -20,13 +20,36 @@
 - touch 触摸圆点保持自动判定，不需要按
 - 没打中仍然正常 Miss
 
-### 2. UI
+### 2. 自定义 Autoplay
+
+新增 **「自定义」** 页面，不包含 `Critical / Perfect / Great / Good` 固定模式按钮，只有四个随机模式：
+
+| 模式 | 可填数量 | 行为 |
+| --- | --- | --- |
+| **随机 All Perfect** | 小P（Perfect，非 Critical Perfect） | 整首严格生成 N 个小P，其余 Critical Perfect |
+| **随机 FC+** | 小P + Great | 其余 Critical Perfect |
+| **随机 FC** | 小P + Great + Good | 其余 Critical Perfect |
+| **随机判定** | 小P + Great + Good + Miss | 其余 Critical Perfect |
+
+- 数量按整首歌严格预生成；超出可抽取音符时自动截断；全为 0 时整首都是 Critical Perfect。
+- 每个模式都有 **包含 Break（绝赞音符）** 开关：
+  - 开：该模式的非 Critical 判定可能落在绝赞音符上
+  - 关：绝赞音符固定为 Critical Perfect，只在普通音符中抽取
+- **Slide（滑动）音符不会参与小P抽取**；Great / Good / Miss 仍可落在 Slide 上。
+- 设置保存在 `cheat.customAutoPlay`，换歌/重试会重新随机。
+- 原版全自动下所有音符自动判定，数量严格；仅判定模式下没打中的音符仍然是 Miss，实际数量可能少于设置值。
+
+### 3. 中英文切换
+
+面板右上角新增 `EN / 中` 按钮，可在中文和 English 之间切换整个界面；选择会保存到 `modSetting.english`。
+
+### 4. UI
 
 - 深色半透明面板 + 圆角卡片 + 粉色/青色强调色
-- 全部面板中文化，使用系统「微软雅黑」动态字体
+- 支持中英文切换，使用系统「微软雅黑」动态字体
 - 面板可拖动，内容支持滚轮滚动
 
-### 3. 行为开关
+### 5. 行为开关
 
 「自动演奏」面板顶部有 **「原版全自动（旧行为）」** 开关：
 
@@ -88,6 +111,8 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
 ## 已知限制
 
 - touch hold（长按）目前仍需自己按；只有 touch tap 圆点是自动判定
+- 自定义数量在「原版全自动」下严格成立；「仅判定」下没打中会额外 Miss，实际数量可能少于设置值
+- Slide 音符不会成为小P；仍可能成为 Great / Good / Miss
 - 如果进歌后模式被游戏重置，请在面板里打开「锁定模式」
 
 ## 许可与致谢

@@ -45,7 +45,8 @@ public class ShowVersionInfo
 		{
 			VersionText.AppendLine("安全模式");
 		}
-		UnityEngine.GUI.Label(new Rect(12f, 42f, 500f, 30f), VersionText.ToString(), TextShadow);
-		UnityEngine.GUI.Label(new Rect(10f, 40f, 500f, 30f), VersionText.ToString(), TextStyle);
+		string text = I18n.T(VersionText.ToString());
+		UnityEngine.GUI.Label(new Rect(12f, 42f, 500f, 30f), text, TextShadow);
+		UnityEngine.GUI.Label(new Rect(10f, 40f, 500f, 30f), text, TextStyle);
 	}
 }

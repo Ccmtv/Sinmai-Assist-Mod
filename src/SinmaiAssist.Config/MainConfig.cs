@@ -55,6 +55,8 @@ public class MainConfig
 
 		public bool ClassicAutoPlay { get; set; }
 
+		public CustomAutoPlayConfig CustomAutoPlay { get; set; } = new CustomAutoPlayConfig();
+
 		public bool FastSkip { get; set; }
 
 		public bool ChartController { get; set; }
@@ -112,6 +114,8 @@ public class MainConfig
 		public bool ShowInfo { get; set; } = true;
 
 		public bool ShowPanel { get; set; } = true;
+
+		public bool English { get; set; }
 	}
 
 	public class ChangeGameSettingsConfig
@@ -203,6 +207,37 @@ public class MainConfig
 		public bool Enable { get; set; }
 
 		public uint Point { get; set; }
+	}
+
+	public class CustomAutoPlayConfig
+	{
+		public int AllPerfectSmallPerfect { get; set; }
+
+		public bool AllPerfectIncludeBreak { get; set; }
+
+		public int FullComboPlusSmallPerfect { get; set; }
+
+		public int FullComboPlusGreat { get; set; }
+
+		public bool FullComboPlusIncludeBreak { get; set; }
+
+		public int FullComboSmallPerfect { get; set; }
+
+		public int FullComboGreat { get; set; }
+
+		public int FullComboGood { get; set; }
+
+		public bool FullComboIncludeBreak { get; set; }
+
+		public int RandomSmallPerfect { get; set; }
+
+		public int RandomGreat { get; set; }
+
+		public int RandomGood { get; set; }
+
+		public int RandomMiss { get; set; }
+
+		public bool RandomIncludeBreak { get; set; }
 	}
 
 	public class UnityLoggerConfig

@@ -10,7 +10,9 @@
 
 A **MelonLoader** mod for SEGA's arcade rhythm game **maimai DX (Sinmai)** that adds a
 **judgment-only autoplay** mode: you play the chart yourself, and every successful hit is
-forced to the selected judgment (`Critical`, `Perfect`, `Great`, ...).
+forced to the selected judgment (`Critical`, `Perfect`, `Great`, ...). It also adds a
+**Custom Autoplay** page for exact-count random judgments and a **Chinese / English UI
+switch**.
 
 Unlike the original autoplay, it does **not** drive the game's own AutoPlay state, so touch
 input keeps working and stars (slides) must be performed manually. If you want the old
@@ -34,8 +36,13 @@ input keeps working and stars (slides) must be performed manually. If you want t
 - **Classic full autoplay toggle**: one switch restores the original Sinmai-Assist
   behaviour (all notes auto-played, stars auto-slide, touch input blocked)
 - **8 judgment modes** plus `None`
-- **Dark Chinese UI**: rounded panels, pink / cyan accents, Microsoft YaHei, draggable,
-  scrollable
+- **Custom Autoplay page**: exact counts of small Perfect (non-Critical), Great, Good and
+  Miss for the random AP / FC+ / FC / Random modes, with an optional Break-note toggle
+- **Slide notes never become small Perfect**; they stay Critical Perfect or use the other
+  non-Critical categories allowed by the selected mode
+- **Bilingual UI**: a top-right `EN / 中` button switches the whole panel between Chinese
+  and English; the choice is saved
+- **Dark UI**: rounded panels, pink / cyan accents, Microsoft YaHei, draggable, scrollable
 - **Config persisted** to `Sinmai-Assist/Config.yml`
 - Only `Sinmai-Assist.dll` is added; no game files are modified
 
@@ -106,6 +113,32 @@ At the top of the **自动演奏** panel there is a **原版全自动（旧行�
 
 The choice is saved to `cheat.classicAutoPlay` in `Sinmai-Assist/Config.yml`.
 
+### Custom Autoplay page
+
+Open the **自定义 / Custom** tab. It has four mode buttons and no fixed
+`Critical / Perfect / Great / Good` buttons:
+
+| Mode | Counts | Behaviour |
+| --- | --- | --- |
+| **Random All Perfect** | small Perfect | Exactly N non-Critical Perfect notes; the rest Critical Perfect |
+| **Random FC+** | small Perfect + Great | The rest Critical Perfect |
+| **Random FC** | small Perfect + Great + Good | The rest Critical Perfect |
+| **Random Judge** | small Perfect + Great + Good + Miss | The rest Critical Perfect |
+
+- Counts are **per song** and strictly generated from a precomputed random plan.
+- Counts larger than the available notes are clamped; all zeros means the whole chart is
+  Critical Perfect.
+- **Include Break** ON: non-Critical judgments may land on Break notes. OFF: Break notes are
+  always Critical Perfect.
+- **Slide notes are excluded from small Perfect**; Great / Good / Miss can still land on
+  them.
+- The page's mode selection is locked automatically so the game does not overwrite it.
+- Settings are saved under `cheat.customAutoPlay` in `Sinmai-Assist/Config.yml`.
+
+In **classic full autoplay** every note is hit automatically, so the counts are exact. In
+**judgment-only** mode the plan only applies to notes you actually hit; missed notes are
+still Miss, so the final counts can differ.
+
 ---
 
 ## Modes
@@ -116,11 +149,14 @@ The choice is saved to `cheat.classicAutoPlay` in `Sinmai-Assist/Config.yml`.
 | **Perfect** | Random `FastPerfect2nd` / `LatePerfect2nd` | AP |
 | **Great** | Random `FastGreat` / `LateGreat` | Full Combo |
 | **Good** | Random `FastGood` / `LateGood` | Full Combo |
-| **Random** | Uniform pick from 10 timings (includes `TooLate`) | Random |
-| **RandomAllPerfect** | Random from the Perfect/Critical range | AP (timing varies) |
-| **RandomFullComboPlus** | ~99% Perfect/Critical, ~1% Great | Full Combo+ |
-| **RandomFullCombo** | ~92% Perfect, ~6% Great, ~2% Good | Full Combo |
+| **Random** | Exact-count plan: small Perfect / Great / Good / Miss, rest Critical Perfect | Random |
+| **RandomAllPerfect** | Exact-count plan: small Perfect, rest Critical Perfect | AP (timing varies) |
+| **RandomFullComboPlus** | Exact-count plan: small Perfect + Great, rest Critical Perfect | Full Combo+ |
+| **RandomFullCombo** | Exact-count plan: small Perfect + Great + Good, rest Critical Perfect | Full Combo |
 | **None** | No judgment override | Normal play |
+
+The four random modes use the counts configured on the **自定义 / Custom** page. Fixed
+`Critical / Perfect / Great / Good` modes are unchanged.
 
 In judgment-only mode the mode only decides **what a successful hit becomes**; it never
 plays notes for you. In classic mode it decides what the auto-played notes become.
@@ -135,6 +171,23 @@ Generated on first launch at `Sinmai-Assist/Config.yml`:
 cheat:
   autoPlay: true          # enable the autoplay patches
   classicAutoPlay: false  # false = judgment-only, true = classic full autoplay
+  customAutoPlay:
+    allPerfectSmallPerfect: 0
+    allPerfectIncludeBreak: false
+    fullComboPlusSmallPerfect: 0
+    fullComboPlusGreat: 0
+    fullComboPlusIncludeBreak: false
+    fullComboSmallPerfect: 0
+    fullComboGreat: 0
+    fullComboGood: 0
+    fullComboIncludeBreak: false
+    randomSmallPerfect: 0
+    randomGreat: 0
+    randomGood: 0
+    randomMiss: 0
+    randomIncludeBreak: false
+modSetting:
+  english: false          # false = Chinese UI, true = English UI
 ```
 
 Hotkeys are in `Sinmai-Assist/KeyBindConfig.yml`:
@@ -244,8 +297,12 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
 
 - **Touch hold notes are still manual.** Only touch tap (the round notes) are auto-judged;
   long touch holds must be pressed by you.
+- **Exact custom counts require classic full autoplay.** In judgment-only mode, missed notes
+  remain Miss and can make the actual counts differ from the configured values.
+- **Slide notes never become small Perfect.** They are excluded from the small-Perfect pool;
+  Great / Good / Miss may still be assigned to them.
 - **Mode can reset when a song starts.** The game sets its own `AutoPlay` to `None` on
-  song start; enable **锁定模式** (lock mode) in the panel, or pick a mode after the song
+  song start; enable **锁定模式 / Lock mode** in the panel, or pick a mode after the song
   starts.
 - **Classic mode blocks touch input by design.** That is the original autoplay behaviour.
 - **Tested on the SDGB build only.** Game updates can rename methods; if patching fails,

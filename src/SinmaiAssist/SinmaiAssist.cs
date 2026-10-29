@@ -54,6 +54,7 @@ public class SinmaiAssist : MelonMod
 			_keyBindConfigManager = new ConfigManager<KeyBindConfig>("./Sinmai-Assist/KeyBindConfig.yml", customConverter);
 			MainConfig = _mainConfigManager.GetConfig();
 			KeyBindConfig = _keyBindConfigManager.GetConfig();
+			I18n.EnglishMode = MainConfig.ModSetting.English;
 			AutoPlay.ClassicMode = MainConfig.Cheat.ClassicAutoPlay;
 			DummyLoginPanel.DummyUserId = MainConfig.Common.DummyLogin.DefaultUserId.ToString();
 			DebugPanel.UnityLogger = MainConfig.Common.UnityLogger.Enable;

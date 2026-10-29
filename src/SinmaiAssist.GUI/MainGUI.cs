@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace SinmaiAssist.GUI;
@@ -8,6 +8,7 @@ public class MainGUI
     private enum Toolbar
     {
         AutoPlay,
+        CustomAutoPlay,
         FastSkip,
         ChartController,
         DummyLogin,
@@ -16,7 +17,7 @@ public class MainGUI
         Debug
     }
 
-    private static readonly string[] TabNames = new string[7] { "自动演奏", "快速跳过", "谱面控制", "虚拟登录", "用户数据", "画面", "调试" };
+    private static readonly string[] TabNames = new string[8] { "自动演奏", "自定义", "快速跳过", "谱面控制", "虚拟登录", "用户数据", "画面", "调试" };
 
     private Rect _panel = new Rect(90f, 80f, 396f, 540f);
 
@@ -65,10 +66,16 @@ public class MainGUI
 
         Rect header = new Rect(panel.x, panel.y, panel.width, 62f);
         UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 11f, 240f, 24f), "Sinmai-Assist", Style.HeaderTitle);
-        UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 35f, 260f, 14f), "maimai DX 助手 · 1.0.0", Style.HeaderSub);
+        UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 35f, 230f, 14f), I18n.T("maimai DX 助手 · 1.0.0"), Style.HeaderSub);
         if (SinmaiAssist.MainConfig.ModSetting.SafeMode)
         {
-            UnityEngine.GUI.Label(new Rect(panel.xMax - 84f, panel.y + 20f, 64f, 20f), "安全模式", Style.Badge);
+            UnityEngine.GUI.Label(new Rect(panel.xMax - 118f, panel.y + 14f, 58f, 20f), I18n.T("安全模式"), Style.Badge);
+        }
+        if (UnityEngine.GUI.Button(new Rect(panel.xMax - 54f, panel.y + 13f, 38f, 22f), I18n.T("EN", "中"), Style.Tab))
+        {
+            I18n.EnglishMode = !I18n.EnglishMode;
+            SinmaiAssist.MainConfig.ModSetting.English = I18n.EnglishMode;
+            SinmaiAssist.SaveMainConfig();
         }
         UnityEngine.GUI.DrawTexture(new Rect(panel.x + 18f, panel.y + 62f, panel.width - 36f, 1f), Style.LineTex);
 
@@ -88,7 +95,7 @@ public class MainGUI
         GUILayout.BeginHorizontal();
         for (int i = 0; i < 4; i++)
         {
-            if (GUILayout.Button(TabNames[i], (int)_toolbar == i ? Style.TabActive : Style.Tab, GUILayout.Height(30f)))
+            if (I18n.Button(TabNames[i], (int)_toolbar == i ? Style.TabActive : Style.Tab, GUILayout.Height(30f)))
             {
                 _toolbar = (Toolbar)i;
             }
@@ -97,7 +104,7 @@ public class MainGUI
         GUILayout.BeginHorizontal();
         for (int j = 4; j < TabNames.Length; j++)
         {
-            if (GUILayout.Button(TabNames[j], (int)_toolbar == j ? Style.TabActive : Style.Tab, GUILayout.Height(30f)))
+            if (I18n.Button(TabNames[j], (int)_toolbar == j ? Style.TabActive : Style.Tab, GUILayout.Height(30f)))
             {
                 _toolbar = (Toolbar)j;
             }
@@ -110,6 +117,10 @@ public class MainGUI
         if (_toolbar == Toolbar.AutoPlay && SinmaiAssist.MainConfig.Cheat.AutoPlay)
         {
             AutoPlayPanel.OnGUI();
+        }
+        else if (_toolbar == Toolbar.CustomAutoPlay && SinmaiAssist.MainConfig.Cheat.AutoPlay)
+        {
+            CustomAutoPlayPanel.OnGUI();
         }
         else if (_toolbar == Toolbar.FastSkip && SinmaiAssist.MainConfig.Cheat.FastSkip)
         {
@@ -144,8 +155,8 @@ public class MainGUI
     private void DisablePanel()
     {
         GUILayout.Space(40f);
-        GUILayout.Label("功能未启用", Style.Title, GUILayout.Height(30f));
-        GUILayout.Label("请先在 Sinmai-Assist/Config.yml 中开启对应功能，然后重启游戏。", Style.DisablePanel, GUILayout.Height(60f));
+        I18n.Label("功能未启用", Style.Title, GUILayout.Height(30f));
+        I18n.Label("请先在 Sinmai-Assist/Config.yml 中开启对应功能，然后重启游戏。", Style.DisablePanel, GUILayout.Height(60f));
     }
 
     private void HandleDrag(Rect header)
