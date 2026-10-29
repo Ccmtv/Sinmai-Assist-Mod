@@ -71,7 +71,7 @@ public class MainGUI
         {
             UnityEngine.GUI.Label(new Rect(panel.xMax - 118f, panel.y + 14f, 58f, 20f), I18n.T("安全模式"), Style.Badge);
         }
-        if (UnityEngine.GUI.Button(new Rect(panel.xMax - 54f, panel.y + 13f, 38f, 22f), I18n.T("EN", "中"), Style.Button))
+        if (UnityEngine.GUI.Button(new Rect(panel.xMax - 54f, panel.y + 13f, 38f, 22f), I18n.T("EN", "中"), Style.Badge))
         {
             I18n.EnglishMode = !I18n.EnglishMode;
             SinmaiAssist.MainConfig.ModSetting.English = I18n.EnglishMode;
