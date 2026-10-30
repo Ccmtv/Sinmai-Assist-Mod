@@ -260,24 +260,9 @@ public class AutoPlay
     private static bool IsSlideNote(NoteData note)
     {
         NotesTypeID.Def type = note.type.getEnum();
-        if (type.isSlide())
-        {
-            return true;
-        }
-        // 滑动音符由星形头（Star / BreakStar 等）+ Slide 组成；
-        // 用户看到的“滑动”也包含这个星形头，因此把它一并视为 Slide。
-        if (type.isStar() && note.child != null)
-        {
-            foreach (NoteData child in note.child)
-            {
-                NotesTypeID.Def childType = child.type.getEnum();
-                if (childType.isSlide() || childType.isConnectSlide())
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        // 滑动音符由星形头（Star / BreakStar / ExStar / ExBreakStar）
+        // 和 Slide 本体组成，两者都算用户看到的“滑动”。
+        return type.isSlide() || type.isStar();
     }
 
     private static void Shuffle<T>(List<T> list, System.Random random)
@@ -440,9 +425,13 @@ public class AutoPlay
 
     private static NoteJudge.ETiming GetTimingForNote(NoteBase note)
     {
-        if (IsCustomMode(autoPlayMode) && TryGetPlannedTiming(note.MonitorId, note.GetNoteIndex(), out NoteJudge.ETiming planned))
+        if (IsCustomMode(autoPlayMode))
         {
-            return planned;
+            if (TryGetPlannedTiming(note.MonitorId, note.GetNoteIndex(), out NoteJudge.ETiming planned))
+            {
+                return planned;
+            }
+            return NoteJudge.ETiming.Critical;
         }
         if (note.ExNote && (autoPlayMode == AutoPlayMode.RandomAllPerfect || autoPlayMode == AutoPlayMode.RandomFullComboPlus || autoPlayMode == AutoPlayMode.RandomFullCombo))
         {
@@ -453,13 +442,17 @@ public class AutoPlay
 
     private static NoteJudge.ETiming GetTimingForSlide(SlideRoot slide)
     {
-        if (IsCustomMode(autoPlayMode) && SlideNoteIndexField != null)
+        if (IsCustomMode(autoPlayMode))
         {
-            int noteIndex = (int)SlideNoteIndexField.GetValue(slide);
-            if (TryGetPlannedTiming(slide.MonitorId, noteIndex, out NoteJudge.ETiming planned))
+            if (SlideNoteIndexField != null)
             {
-                return planned;
+                int noteIndex = (int)SlideNoteIndexField.GetValue(slide);
+                if (TryGetPlannedTiming(slide.MonitorId, noteIndex, out NoteJudge.ETiming planned))
+                {
+                    return planned;
+                }
             }
+            return NoteJudge.ETiming.Critical;
         }
         if (autoPlayMode == AutoPlayMode.RandomAllPerfect || autoPlayMode == AutoPlayMode.RandomFullComboPlus || autoPlayMode == AutoPlayMode.RandomFullCombo)
         {
@@ -572,6 +565,11 @@ public class AutoPlay
         if (_hasPending)
         {
             __result = _pendingTiming;
+            return;
+        }
+        if (IsCustomMode(autoPlayMode))
+        {
+            __result = NoteJudge.ETiming.Critical;
             return;
         }
         int num = UnityEngine.Random.Range(0, 1000);
