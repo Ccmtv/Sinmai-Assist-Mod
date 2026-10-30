@@ -18,8 +18,8 @@ public class CustomAutoPlayPanel
         I18n.Label("严格数量模式：整首歌会恰好生成指定数量的非 Critical 判定，其余音符全部为 Critical Perfect。", MainGUI.Style.Muted);
         I18n.Label("注意：仅判定模式下，没打中的音符仍然是 Miss；方案只决定你打中后的判定。", MainGUI.Style.Muted);
         I18n.Label("数量超过谱面可抽取音符时会自动截断；全为 0 时整首歌为 Critical Perfect。", MainGUI.Style.Muted);
-        I18n.Label("Slide（滑动）音符不会参与小P抽取；Great/Good/Miss 是否可落在 Slide 上由各自开关控制。", MainGUI.Style.Muted);
-        I18n.Label("BreakSlide（绝赞 Slide）需要同时开启 Break 和对应 Slide 开关。", MainGUI.Style.Muted);
+        I18n.Label("「包含 Slide」只控制 Great/Good/Miss 是否能落在滑条上；「包含 Break」分别控制每个判定是否能落在绝赞音符上。", MainGUI.Style.Muted);
+        I18n.Label("小P 不参与 Slide，但可通过「小P 包含 Break」落在绝赞上；BreakSlide 需要同时开启该判定的 Break 和 Slide。", MainGUI.Style.Muted);
         I18n.Label(AutoPlay.ClassicMode ? "当前行为：原版全自动（所有音符自动判定）" : "当前行为：仅判定（需要自己打，命中后才套用判定）", MainGUI.Style.Muted);
         I18n.Label("当前模式：" + ModeName(AutoPlay.autoPlayMode), MainGUI.Style.Text);
 
@@ -93,14 +93,13 @@ public class CustomAutoPlayPanel
             config.AllPerfectSmallPerfect = perfect;
             SaveAndRefresh();
         }
-        bool includeBreak = config.AllPerfectIncludeBreak;
-        if (BreakRow("ap_break", "包含 Break（绝赞音符）", ref includeBreak))
+        bool perfectBreak = config.AllPerfectSmallPerfectIncludeBreak;
+        if (ToggleRow("小P 包含 Break", ref perfectBreak))
         {
-            config.AllPerfectIncludeBreak = includeBreak;
+            config.AllPerfectSmallPerfectIncludeBreak = perfectBreak;
             SaveAndRefresh();
         }
         I18n.Label("其余音符：Critical Perfect。小P 只会是 Perfect，不会出现 Critical Perfect。", MainGUI.Style.Muted);
-        I18n.Label(BreakHint(config.AllPerfectIncludeBreak), MainGUI.Style.Muted);
         DrawResetButton(config);
     }
 
@@ -113,6 +112,12 @@ public class CustomAutoPlayPanel
             config.FullComboPlusSmallPerfect = perfect;
             SaveAndRefresh();
         }
+        bool perfectBreak = config.FullComboPlusSmallPerfectIncludeBreak;
+        if (ToggleRow("小P 包含 Break", ref perfectBreak))
+        {
+            config.FullComboPlusSmallPerfectIncludeBreak = perfectBreak;
+            SaveAndRefresh();
+        }
         int great = config.FullComboPlusGreat;
         if (IntRow("fcp_g", "Great 数量", ref great))
         {
@@ -120,19 +125,14 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool greatIncludeSlide = config.FullComboPlusGreatIncludeSlide;
-        if (SlideRow("fcp_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        bool greatIncludeBreak = config.FullComboPlusGreatIncludeBreak;
+        if (SlideBreakRow("Great 包含 Slide", "Great 包含 Break", ref greatIncludeSlide, ref greatIncludeBreak))
         {
             config.FullComboPlusGreatIncludeSlide = greatIncludeSlide;
-            SaveAndRefresh();
-        }
-        bool includeBreak = config.FullComboPlusIncludeBreak;
-        if (BreakRow("fcp_break", "包含 Break（绝赞音符）", ref includeBreak))
-        {
-            config.FullComboPlusIncludeBreak = includeBreak;
+            config.FullComboPlusGreatIncludeBreak = greatIncludeBreak;
             SaveAndRefresh();
         }
         I18n.Label("其余音符：Critical Perfect。", MainGUI.Style.Muted);
-        I18n.Label(BreakHint(config.FullComboPlusIncludeBreak), MainGUI.Style.Muted);
         DrawResetButton(config);
     }
 
@@ -145,6 +145,12 @@ public class CustomAutoPlayPanel
             config.FullComboSmallPerfect = perfect;
             SaveAndRefresh();
         }
+        bool perfectBreak = config.FullComboSmallPerfectIncludeBreak;
+        if (ToggleRow("小P 包含 Break", ref perfectBreak))
+        {
+            config.FullComboSmallPerfectIncludeBreak = perfectBreak;
+            SaveAndRefresh();
+        }
         int great = config.FullComboGreat;
         if (IntRow("fc_g", "Great 数量", ref great))
         {
@@ -152,9 +158,11 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool greatIncludeSlide = config.FullComboGreatIncludeSlide;
-        if (SlideRow("fc_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        bool greatIncludeBreak = config.FullComboGreatIncludeBreak;
+        if (SlideBreakRow("Great 包含 Slide", "Great 包含 Break", ref greatIncludeSlide, ref greatIncludeBreak))
         {
             config.FullComboGreatIncludeSlide = greatIncludeSlide;
+            config.FullComboGreatIncludeBreak = greatIncludeBreak;
             SaveAndRefresh();
         }
         int good = config.FullComboGood;
@@ -164,19 +172,14 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool goodIncludeSlide = config.FullComboGoodIncludeSlide;
-        if (SlideRow("fc_good_slide", "Good 包含 Slide（滑动）", ref goodIncludeSlide))
+        bool goodIncludeBreak = config.FullComboGoodIncludeBreak;
+        if (SlideBreakRow("Good 包含 Slide", "Good 包含 Break", ref goodIncludeSlide, ref goodIncludeBreak))
         {
             config.FullComboGoodIncludeSlide = goodIncludeSlide;
-            SaveAndRefresh();
-        }
-        bool includeBreak = config.FullComboIncludeBreak;
-        if (BreakRow("fc_break", "包含 Break（绝赞音符）", ref includeBreak))
-        {
-            config.FullComboIncludeBreak = includeBreak;
+            config.FullComboGoodIncludeBreak = goodIncludeBreak;
             SaveAndRefresh();
         }
         I18n.Label("其余音符：Critical Perfect。", MainGUI.Style.Muted);
-        I18n.Label(BreakHint(config.FullComboIncludeBreak), MainGUI.Style.Muted);
         DrawResetButton(config);
     }
 
@@ -189,6 +192,12 @@ public class CustomAutoPlayPanel
             config.RandomSmallPerfect = perfect;
             SaveAndRefresh();
         }
+        bool perfectBreak = config.RandomSmallPerfectIncludeBreak;
+        if (ToggleRow("小P 包含 Break", ref perfectBreak))
+        {
+            config.RandomSmallPerfectIncludeBreak = perfectBreak;
+            SaveAndRefresh();
+        }
         int great = config.RandomGreat;
         if (IntRow("rnd_g", "Great 数量", ref great))
         {
@@ -196,9 +205,11 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool greatIncludeSlide = config.RandomGreatIncludeSlide;
-        if (SlideRow("rnd_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        bool greatIncludeBreak = config.RandomGreatIncludeBreak;
+        if (SlideBreakRow("Great 包含 Slide", "Great 包含 Break", ref greatIncludeSlide, ref greatIncludeBreak))
         {
             config.RandomGreatIncludeSlide = greatIncludeSlide;
+            config.RandomGreatIncludeBreak = greatIncludeBreak;
             SaveAndRefresh();
         }
         int good = config.RandomGood;
@@ -208,9 +219,11 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool goodIncludeSlide = config.RandomGoodIncludeSlide;
-        if (SlideRow("rnd_good_slide", "Good 包含 Slide（滑动）", ref goodIncludeSlide))
+        bool goodIncludeBreak = config.RandomGoodIncludeBreak;
+        if (SlideBreakRow("Good 包含 Slide", "Good 包含 Break", ref goodIncludeSlide, ref goodIncludeBreak))
         {
             config.RandomGoodIncludeSlide = goodIncludeSlide;
+            config.RandomGoodIncludeBreak = goodIncludeBreak;
             SaveAndRefresh();
         }
         int miss = config.RandomMiss;
@@ -220,19 +233,14 @@ public class CustomAutoPlayPanel
             SaveAndRefresh();
         }
         bool missIncludeSlide = config.RandomMissIncludeSlide;
-        if (SlideRow("rnd_miss_slide", "Miss 包含 Slide（滑动）", ref missIncludeSlide))
+        bool missIncludeBreak = config.RandomMissIncludeBreak;
+        if (SlideBreakRow("Miss 包含 Slide", "Miss 包含 Break", ref missIncludeSlide, ref missIncludeBreak))
         {
             config.RandomMissIncludeSlide = missIncludeSlide;
-            SaveAndRefresh();
-        }
-        bool includeBreak = config.RandomIncludeBreak;
-        if (BreakRow("rnd_break", "包含 Break（绝赞音符）", ref includeBreak))
-        {
-            config.RandomIncludeBreak = includeBreak;
+            config.RandomMissIncludeBreak = missIncludeBreak;
             SaveAndRefresh();
         }
         I18n.Label("其余音符：Critical Perfect。Miss 会按未击中处理。", MainGUI.Style.Muted);
-        I18n.Label(BreakHint(config.RandomIncludeBreak), MainGUI.Style.Muted);
         DrawResetButton(config);
     }
 
@@ -245,36 +253,25 @@ public class CustomAutoPlayPanel
             {
             case AutoPlay.AutoPlayMode.RandomAllPerfect:
                 config.AllPerfectSmallPerfect = 0;
-                config.AllPerfectIncludeBreak = false;
                 break;
             case AutoPlay.AutoPlayMode.RandomFullComboPlus:
                 config.FullComboPlusSmallPerfect = 0;
                 config.FullComboPlusGreat = 0;
-                config.FullComboPlusIncludeBreak = false;
                 break;
             case AutoPlay.AutoPlayMode.RandomFullCombo:
                 config.FullComboSmallPerfect = 0;
                 config.FullComboGreat = 0;
                 config.FullComboGood = 0;
-                config.FullComboIncludeBreak = false;
                 break;
             case AutoPlay.AutoPlayMode.Random:
                 config.RandomSmallPerfect = 0;
                 config.RandomGreat = 0;
                 config.RandomGood = 0;
                 config.RandomMiss = 0;
-                config.RandomIncludeBreak = false;
                 break;
             }
             SaveAndRefresh();
         }
-    }
-
-    private static string BreakHint(bool includeBreak)
-    {
-        return includeBreak
-            ? "包含 Break：本模式的非 Critical 判定都可能落在绝赞音符上。"
-            : "不包含 Break：绝赞音符固定为 Critical Perfect，非 Critical 判定只会在普通音符中抽取。";
     }
 
     private static bool ModeButton(string text, AutoPlay.AutoPlayMode mode)
@@ -342,7 +339,7 @@ public class CustomAutoPlayPanel
         return changed;
     }
 
-    private static bool SlideRow(string key, string label, ref bool value)
+    private static bool ToggleRow(string label, ref bool value)
     {
         bool newValue = I18n.Toggle(value, label, MainGUI.Style.Toggle, GUILayout.Height(26f));
         if (newValue != value)
@@ -353,15 +350,24 @@ public class CustomAutoPlayPanel
         return false;
     }
 
-    private static bool BreakRow(string key, string label, ref bool value)
+    private static bool SlideBreakRow(string slideLabel, string breakLabel, ref bool slide, ref bool includeBreak)
     {
-        bool newValue = I18n.Toggle(value, label, MainGUI.Style.Toggle, GUILayout.Height(30f));
-        if (newValue != value)
+        bool changed = false;
+        GUILayout.BeginHorizontal();
+        bool newSlide = I18n.Toggle(slide, slideLabel, MainGUI.Style.Toggle, GUILayout.Width(170f), GUILayout.Height(26f));
+        if (newSlide != slide)
         {
-            value = newValue;
-            return true;
+            slide = newSlide;
+            changed = true;
         }
-        return false;
+        bool newBreak = I18n.Toggle(includeBreak, breakLabel, MainGUI.Style.Toggle, GUILayout.Width(170f), GUILayout.Height(26f));
+        if (newBreak != includeBreak)
+        {
+            includeBreak = newBreak;
+            changed = true;
+        }
+        GUILayout.EndHorizontal();
+        return changed;
     }
 
     private static CustomAutoPlayConfig GetConfig()

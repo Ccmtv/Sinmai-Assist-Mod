@@ -87,6 +87,8 @@ public class AutoPlay
 
     private static readonly FieldInfo SlideNoteIndexField = AccessTools.Field(typeof(SlideRoot), "NoteIndex");
 
+    private static readonly FieldInfo SlideNotesTypeField = AccessTools.Field(typeof(SlideRoot), "NotesType");
+
     private static int _planRevision;
 
     private static int _planSeed;
@@ -143,14 +145,44 @@ public class AutoPlay
         return cheat.CustomAutoPlay;
     }
 
-    private static bool GetIncludeBreak(AutoPlayMode mode, CustomAutoPlayConfig config)
+    private static bool GetSmallPerfectIncludeBreak(AutoPlayMode mode, CustomAutoPlayConfig config)
     {
         return mode switch
         {
-            AutoPlayMode.RandomAllPerfect => config.AllPerfectIncludeBreak,
-            AutoPlayMode.RandomFullComboPlus => config.FullComboPlusIncludeBreak,
-            AutoPlayMode.RandomFullCombo => config.FullComboIncludeBreak,
-            AutoPlayMode.Random => config.RandomIncludeBreak,
+            AutoPlayMode.RandomAllPerfect => config.AllPerfectSmallPerfectIncludeBreak,
+            AutoPlayMode.RandomFullComboPlus => config.FullComboPlusSmallPerfectIncludeBreak,
+            AutoPlayMode.RandomFullCombo => config.FullComboSmallPerfectIncludeBreak,
+            AutoPlayMode.Random => config.RandomSmallPerfectIncludeBreak,
+            _ => false
+        };
+    }
+
+    private static bool GetGreatIncludeBreak(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.RandomFullComboPlus => config.FullComboPlusGreatIncludeBreak,
+            AutoPlayMode.RandomFullCombo => config.FullComboGreatIncludeBreak,
+            AutoPlayMode.Random => config.RandomGreatIncludeBreak,
+            _ => false
+        };
+    }
+
+    private static bool GetGoodIncludeBreak(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.RandomFullCombo => config.FullComboGoodIncludeBreak,
+            AutoPlayMode.Random => config.RandomGoodIncludeBreak,
+            _ => false
+        };
+    }
+
+    private static bool GetMissIncludeBreak(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.Random => config.RandomMissIncludeBreak,
             _ => false
         };
     }
@@ -224,7 +256,7 @@ public class AutoPlay
         };
     }
 
-    private static List<NoteData> BuildCategoryPool(List<NoteData> pool, HashSet<int> used, bool includeSlide)
+    private static List<NoteData> BuildCategoryPool(List<NoteData> pool, HashSet<int> used, bool includeSlide, bool includeBreak)
     {
         List<NoteData> result = new List<NoteData>(pool.Count);
         foreach (NoteData note in pool)
@@ -234,6 +266,10 @@ public class AutoPlay
                 continue;
             }
             if (!includeSlide && IsSlideNote(note))
+            {
+                continue;
+            }
+            if (!includeBreak && IsBreakNote(note))
             {
                 continue;
             }
@@ -259,10 +295,8 @@ public class AutoPlay
 
     private static bool IsSlideNote(NoteData note)
     {
-        NotesTypeID.Def type = note.type.getEnum();
-        // 滑动音符由星形头（Star / BreakStar / ExStar / ExBreakStar）
-        // 和 Slide 本体组成，两者都算用户看到的“滑动”。
-        return type.isSlide() || type.isStar();
+        // 只有 Slide 本体算滑动；星形头是普通 tap，可以正常参与其它判定。
+        return note.type.getEnum().isSlide();
     }
 
     private static void Shuffle<T>(List<T> list, System.Random random)
@@ -319,20 +353,20 @@ public class AutoPlay
             return false;
         }
 
-        bool includeBreak = GetIncludeBreak(autoPlayMode, config);
-        List<NoteData> pool = new List<NoteData>(notes.Count);
+        List<NoteData> pool = notes;
+        bool perfectIncludeBreak = GetSmallPerfectIncludeBreak(autoPlayMode, config);
         List<NoteData> perfectPool = new List<NoteData>(notes.Count);
         foreach (NoteData note in notes)
         {
-            if (!includeBreak && IsBreakNote(note))
+            if (IsSlideNote(note))
             {
                 continue;
             }
-            pool.Add(note);
-            if (!IsSlideNote(note))
+            if (!perfectIncludeBreak && IsBreakNote(note))
             {
-                perfectPool.Add(note);
+                continue;
             }
+            perfectPool.Add(note);
         }
 
         GetCounts(autoPlayMode, config, out int perfect, out int great, out int good, out int miss);
@@ -357,7 +391,7 @@ public class AutoPlay
             used.Add(note.indexNote);
         }
 
-        List<NoteData> greatPool = BuildCategoryPool(pool, used, GetGreatIncludeSlide(autoPlayMode, config));
+        List<NoteData> greatPool = BuildCategoryPool(pool, used, GetGreatIncludeSlide(autoPlayMode, config), GetGreatIncludeBreak(autoPlayMode, config));
         Shuffle(greatPool, random);
         great = Math.Min(great, greatPool.Count);
         for (int i = 0; i < great; i++)
@@ -367,7 +401,7 @@ public class AutoPlay
             used.Add(note.indexNote);
         }
 
-        List<NoteData> goodPool = BuildCategoryPool(pool, used, GetGoodIncludeSlide(autoPlayMode, config));
+        List<NoteData> goodPool = BuildCategoryPool(pool, used, GetGoodIncludeSlide(autoPlayMode, config), GetGoodIncludeBreak(autoPlayMode, config));
         Shuffle(goodPool, random);
         good = Math.Min(good, goodPool.Count);
         for (int i = 0; i < good; i++)
@@ -377,7 +411,7 @@ public class AutoPlay
             used.Add(note.indexNote);
         }
 
-        List<NoteData> missPool = BuildCategoryPool(pool, used, GetMissIncludeSlide(autoPlayMode, config));
+        List<NoteData> missPool = BuildCategoryPool(pool, used, GetMissIncludeSlide(autoPlayMode, config), GetMissIncludeBreak(autoPlayMode, config));
         Shuffle(missPool, random);
         miss = Math.Min(miss, missPool.Count);
         for (int i = 0; i < miss; i++)
@@ -440,6 +474,55 @@ public class AutoPlay
         return GameManager.AutoJudge();
     }
 
+    private static NoteJudge.ETiming SanitizeSlideTiming(NoteJudge.ETiming timing, bool isBreakSlide)
+    {
+        CustomAutoPlayConfig config = GetCustomConfig();
+        if (config == null)
+        {
+            return NoteJudge.ETiming.Critical;
+        }
+        switch (timing)
+        {
+        case NoteJudge.ETiming.FastPerfect2nd:
+        case NoteJudge.ETiming.FastPerfect:
+        case NoteJudge.ETiming.LatePerfect:
+        case NoteJudge.ETiming.LatePerfect2nd:
+            // 滑动永远不参与小P。
+            return NoteJudge.ETiming.Critical;
+        case NoteJudge.ETiming.FastGreat3rd:
+        case NoteJudge.ETiming.FastGreat2nd:
+        case NoteJudge.ETiming.FastGreat:
+        case NoteJudge.ETiming.LateGreat:
+        case NoteJudge.ETiming.LateGreat2nd:
+        case NoteJudge.ETiming.LateGreat3rd:
+            return GetGreatIncludeSlide(autoPlayMode, config) && (!isBreakSlide || GetGreatIncludeBreak(autoPlayMode, config))
+                ? timing
+                : NoteJudge.ETiming.Critical;
+        case NoteJudge.ETiming.FastGood:
+        case NoteJudge.ETiming.LateGood:
+            return GetGoodIncludeSlide(autoPlayMode, config) && (!isBreakSlide || GetGoodIncludeBreak(autoPlayMode, config))
+                ? timing
+                : NoteJudge.ETiming.Critical;
+        case NoteJudge.ETiming.TooLate:
+            return GetMissIncludeSlide(autoPlayMode, config) && (!isBreakSlide || GetMissIncludeBreak(autoPlayMode, config))
+                ? timing
+                : NoteJudge.ETiming.Critical;
+        default:
+            return timing;
+        }
+    }
+
+    private static bool IsBreakSlide(SlideRoot slide)
+    {
+        if (SlideNotesTypeField == null)
+        {
+            return false;
+        }
+        NotesTypeID type = (NotesTypeID)SlideNotesTypeField.GetValue(slide);
+        NotesTypeID.Def def = type.getEnum();
+        return def.isBreak() || def.isExBreak();
+    }
+
     private static NoteJudge.ETiming GetTimingForSlide(SlideRoot slide)
     {
         if (IsCustomMode(autoPlayMode))
@@ -449,7 +532,7 @@ public class AutoPlay
                 int noteIndex = (int)SlideNoteIndexField.GetValue(slide);
                 if (TryGetPlannedTiming(slide.MonitorId, noteIndex, out NoteJudge.ETiming planned))
                 {
-                    return planned;
+                    return SanitizeSlideTiming(planned, IsBreakSlide(slide));
                 }
             }
             return NoteJudge.ETiming.Critical;
@@ -743,11 +826,22 @@ public class AutoPlay
         {
             return;
         }
-        int noteIndex = (int)SlideNoteIndexField.GetValue(__instance);
-        if (TryGetPlannedTiming(__instance.MonitorId, noteIndex, out NoteJudge.ETiming timing) && timing == NoteJudge.ETiming.TooLate)
+        FieldInfo judgeResultField = AccessTools.Field(typeof(SlideRoot), "JudgeResult");
+        NoteJudge.ETiming current = (NoteJudge.ETiming)judgeResultField.GetValue(__instance);
+        if (current == NoteJudge.ETiming.End || current == NoteJudge.ETiming.TooLate)
         {
-            AccessTools.Field(typeof(SlideRoot), "JudgeResult").SetValue(__instance, timing);
+            // 已经 Miss 的 Slide 不能在这里被改成 Critical Perfect。
+            return;
         }
+        int noteIndex = (int)SlideNoteIndexField.GetValue(__instance);
+        NoteJudge.ETiming result = NoteJudge.ETiming.Critical;
+        if (TryGetPlannedTiming(__instance.MonitorId, noteIndex, out NoteJudge.ETiming planned))
+        {
+            result = SanitizeSlideTiming(planned, IsBreakSlide(__instance));
+        }
+        // PlayJudgeSe 是显示判定、结算成绩之前的最后关口：
+        // 在这里强制写回，避免 Slide 条被其它路径改成 Great/Good。
+        judgeResultField.SetValue(__instance, result);
     }
 
     /// <summary>

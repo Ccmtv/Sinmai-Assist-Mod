@@ -42,9 +42,11 @@ input keeps working and stars (slides) must be performed manually. If you want t
   behaviour (all notes auto-played, stars auto-slide, touch input blocked)
 - **8 judgment modes** plus `None`
 - **Custom Autoplay page**: exact counts of small Perfect (non-Critical), Great, Good and
-  Miss for the random AP / FC+ / FC / Random modes, with an optional Break-note toggle
+  Miss for the random AP / FC+ / FC / Random modes
+- **Per-judgment Break toggles**: small Perfect, Great, Good and Miss each have their own
+  **Include Break** switch instead of one shared mode-level switch
 - **Slide notes never become small Perfect**; Great / Good / Miss each have their own
-  **Include Slide** toggle, and BreakSlide requires both the Break and Slide toggles
+  **Include Slide** toggle, and BreakSlide requires both the matching Break and Slide toggles
 - **Bilingual UI**: a top-right `EN / 中` button switches the whole panel between Chinese
   and English; the choice is saved
 - **Dark UI**: rounded panels, pink / cyan accents, Microsoft YaHei, draggable, scrollable
@@ -133,14 +135,15 @@ Open the **自定义 / Custom** tab. It has four mode buttons and no fixed
 - Counts are **per song** and strictly generated from a precomputed random plan.
 - Counts larger than the available notes are clamped; all zeros means the whole chart is
   Critical Perfect.
-- **Include Break** ON: non-Critical judgments may land on Break notes. OFF: Break notes are
-  always Critical Perfect.
+- **Per-judgment Include Break**: small Perfect, Great, Good and Miss each have their own
+  Break switch. OFF means that judgment cannot land on any Break note.
 - **Slide notes are excluded from small Perfect.** Great / Good / Miss each have an
   independent **Include Slide** toggle; when it is off that judgment cannot land on a slide.
-- The star head and the slide body are both treated as **Slide**, so both become Critical
-  Perfect when the matching Include Slide toggle is off.
-- **BreakSlide** is available only when both **Include Break** and the matching
-  **Include Slide** toggle are on.
+- The **slide bar/body** is treated as Slide and becomes Critical Perfect when the matching
+  Include Slide toggle is off. The **star head is a normal tap** and can still receive
+  Great / Good / Miss.
+- **BreakSlide** is available only when both the matching **Include Break** and
+  **Include Slide** toggles are on.
 - The page's mode selection is locked automatically so the game does not overwrite it.
 - Settings are saved under `cheat.customAutoPlay` in `Sinmai-Assist/Config.yml`.
 
@@ -182,25 +185,31 @@ cheat:
   classicAutoPlay: false  # false = judgment-only, true = classic full autoplay
   customAutoPlay:
     allPerfectSmallPerfect: 0
-    allPerfectIncludeBreak: false
+    allPerfectSmallPerfectIncludeBreak: false
     fullComboPlusSmallPerfect: 0
+    fullComboPlusSmallPerfectIncludeBreak: false
     fullComboPlusGreat: 0
     fullComboPlusGreatIncludeSlide: true
-    fullComboPlusIncludeBreak: false
+    fullComboPlusGreatIncludeBreak: false
     fullComboSmallPerfect: 0
+    fullComboSmallPerfectIncludeBreak: false
     fullComboGreat: 0
     fullComboGreatIncludeSlide: true
+    fullComboGreatIncludeBreak: false
     fullComboGood: 0
     fullComboGoodIncludeSlide: true
-    fullComboIncludeBreak: false
+    fullComboGoodIncludeBreak: false
     randomSmallPerfect: 0
+    randomSmallPerfectIncludeBreak: false
     randomGreat: 0
     randomGreatIncludeSlide: true
+    randomGreatIncludeBreak: false
     randomGood: 0
     randomGoodIncludeSlide: true
+    randomGoodIncludeBreak: false
     randomMiss: 0
     randomMissIncludeSlide: true
-    randomIncludeBreak: false
+    randomMissIncludeBreak: false
 modSetting:
   english: false          # false = Chinese UI, true = English UI
 ```
@@ -315,8 +324,8 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
 - **Exact custom counts require classic full autoplay.** In judgment-only mode, missed notes
   remain Miss and can make the actual counts differ from the configured values.
 - **Slide notes never become small Perfect.** Great / Good / Miss may be assigned to them
-  only when their own **Include Slide** toggle is on; BreakSlide also requires the Break
-  toggle.
+  only when their own **Include Slide** toggle is on; BreakSlide also requires the matching
+  **Include Break** toggle.
 - **Mode can reset when a song starts.** The game sets its own `AutoPlay` to `None` on
   song start; enable **锁定模式 / Lock mode** in the panel, or pick a mode after the song
   starts.

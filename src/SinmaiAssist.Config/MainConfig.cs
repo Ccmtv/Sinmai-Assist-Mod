@@ -213,43 +213,55 @@ public class MainConfig
 	{
 		public int AllPerfectSmallPerfect { get; set; }
 
-		public bool AllPerfectIncludeBreak { get; set; }
+		public bool AllPerfectSmallPerfectIncludeBreak { get; set; }
 
 		public int FullComboPlusSmallPerfect { get; set; }
+
+		public bool FullComboPlusSmallPerfectIncludeBreak { get; set; }
 
 		public int FullComboPlusGreat { get; set; }
 
 		public bool FullComboPlusGreatIncludeSlide { get; set; } = true;
 
-		public bool FullComboPlusIncludeBreak { get; set; }
+		public bool FullComboPlusGreatIncludeBreak { get; set; }
 
 		public int FullComboSmallPerfect { get; set; }
+
+		public bool FullComboSmallPerfectIncludeBreak { get; set; }
 
 		public int FullComboGreat { get; set; }
 
 		public bool FullComboGreatIncludeSlide { get; set; } = true;
 
+		public bool FullComboGreatIncludeBreak { get; set; }
+
 		public int FullComboGood { get; set; }
 
 		public bool FullComboGoodIncludeSlide { get; set; } = true;
 
-		public bool FullComboIncludeBreak { get; set; }
+		public bool FullComboGoodIncludeBreak { get; set; }
 
 		public int RandomSmallPerfect { get; set; }
+
+		public bool RandomSmallPerfectIncludeBreak { get; set; }
 
 		public int RandomGreat { get; set; }
 
 		public bool RandomGreatIncludeSlide { get; set; } = true;
 
+		public bool RandomGreatIncludeBreak { get; set; }
+
 		public int RandomGood { get; set; }
 
 		public bool RandomGoodIncludeSlide { get; set; } = true;
+
+		public bool RandomGoodIncludeBreak { get; set; }
 
 		public int RandomMiss { get; set; }
 
 		public bool RandomMissIncludeSlide { get; set; } = true;
 
-		public bool RandomIncludeBreak { get; set; }
+		public bool RandomMissIncludeBreak { get; set; }
 	}
 
 	public class UnityLoggerConfig

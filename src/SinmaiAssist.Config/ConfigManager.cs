@@ -76,7 +76,9 @@ public class ConfigManager<T> where T : new()
 
 	private IDeserializer CreateDeserializer()
 	{
-		DeserializerBuilder deserializerBuilder = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance);
+		DeserializerBuilder deserializerBuilder = new DeserializerBuilder()
+			.WithNamingConvention(CamelCaseNamingConvention.Instance)
+			.IgnoreUnmatchedProperties();
 		if (_customConverter != null)
 		{
 			deserializerBuilder = deserializerBuilder.WithTypeConverter(_customConverter);
