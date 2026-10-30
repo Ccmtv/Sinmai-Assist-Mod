@@ -41,6 +41,7 @@
   - 开：该模式的非 Critical 判定可能落在绝赞音符上
   - 关：绝赞音符固定为 Critical Perfect，只在普通音符中抽取
 - **Slide（滑动）音符不会参与小P抽取**；Great / Good / Miss 各自有独立的「包含 Slide」开关，关闭后该判定不会落在 Slide 上。
+- Slide 的**星形头**和**滑动本体**都算 Slide；关闭对应开关后两者都会变成 Critical Perfect。
 - **BreakSlide（绝赞 Slide）** 需要同时开启「包含 Break」和对应判定的「包含 Slide」开关。
 - 设置保存在 `cheat.customAutoPlay`，换歌/重试会重新随机。
 - 原版全自动下所有音符自动判定，数量严格；仅判定模式下没打中的音符仍然是 Miss，实际数量可能少于设置值。

@@ -259,7 +259,25 @@ public class AutoPlay
 
     private static bool IsSlideNote(NoteData note)
     {
-        return note.type.getEnum().isSlide();
+        NotesTypeID.Def type = note.type.getEnum();
+        if (type.isSlide())
+        {
+            return true;
+        }
+        // 滑动音符由星形头（Star / BreakStar 等）+ Slide 组成；
+        // 用户看到的“滑动”也包含这个星形头，因此把它一并视为 Slide。
+        if (type.isStar() && note.child != null)
+        {
+            foreach (NoteData child in note.child)
+            {
+                NotesTypeID.Def childType = child.type.getEnum();
+                if (childType.isSlide() || childType.isConnectSlide())
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private static void Shuffle<T>(List<T> list, System.Random random)

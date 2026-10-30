@@ -137,6 +137,8 @@ Open the **自定义 / Custom** tab. It has four mode buttons and no fixed
   always Critical Perfect.
 - **Slide notes are excluded from small Perfect.** Great / Good / Miss each have an
   independent **Include Slide** toggle; when it is off that judgment cannot land on a slide.
+- The star head and the slide body are both treated as **Slide**, so both become Critical
+  Perfect when the matching Include Slide toggle is off.
 - **BreakSlide** is available only when both **Include Break** and the matching
   **Include Slide** toggle are on.
 - The page's mode selection is locked automatically so the game does not overwrite it.
