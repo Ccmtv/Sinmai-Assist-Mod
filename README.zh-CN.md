@@ -40,7 +40,8 @@
 - 每个模式都有 **包含 Break（绝赞音符）** 开关：
   - 开：该模式的非 Critical 判定可能落在绝赞音符上
   - 关：绝赞音符固定为 Critical Perfect，只在普通音符中抽取
-- **Slide（滑动）音符不会参与小P抽取**；Great / Good / Miss 仍可落在 Slide 上。
+- **Slide（滑动）音符不会参与小P抽取**；Great / Good / Miss 各自有独立的「包含 Slide」开关，关闭后该判定不会落在 Slide 上。
+- **BreakSlide（绝赞 Slide）** 需要同时开启「包含 Break」和对应判定的「包含 Slide」开关。
 - 设置保存在 `cheat.customAutoPlay`，换歌/重试会重新随机。
 - 原版全自动下所有音符自动判定，数量严格；仅判定模式下没打中的音符仍然是 Miss，实际数量可能少于设置值。
 
@@ -117,7 +118,7 @@ dotnet build .\src\Sinmai-Assist.csproj -c Release `
 
 - touch hold（长按）目前仍需自己按；只有 touch tap 圆点是自动判定
 - 自定义数量在「原版全自动」下严格成立；「仅判定」下没打中会额外 Miss，实际数量可能少于设置值
-- Slide 音符不会成为小P；仍可能成为 Great / Good / Miss
+- Slide 音符不会成为小P；Great / Good / Miss 只有在各自的「包含 Slide」开关开启时才可能落在 Slide 上；BreakSlide 还需要同时开启 Break
 - 如果进歌后模式被游戏重置，请在面板里打开「锁定模式」
 
 ## 许可与致谢

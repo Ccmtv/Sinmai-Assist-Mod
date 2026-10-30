@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SinmaiAssist.Cheat;
 using SinmaiAssist.Config;
 using UnityEngine;
@@ -18,7 +18,8 @@ public class CustomAutoPlayPanel
         I18n.Label("严格数量模式：整首歌会恰好生成指定数量的非 Critical 判定，其余音符全部为 Critical Perfect。", MainGUI.Style.Muted);
         I18n.Label("注意：仅判定模式下，没打中的音符仍然是 Miss；方案只决定你打中后的判定。", MainGUI.Style.Muted);
         I18n.Label("数量超过谱面可抽取音符时会自动截断；全为 0 时整首歌为 Critical Perfect。", MainGUI.Style.Muted);
-        I18n.Label("Slide（滑动）音符不会参与小P抽取；其它非 Critical 判定仍可落在 Slide 上。", MainGUI.Style.Muted);
+        I18n.Label("Slide（滑动）音符不会参与小P抽取；Great/Good/Miss 是否可落在 Slide 上由各自开关控制。", MainGUI.Style.Muted);
+        I18n.Label("BreakSlide（绝赞 Slide）需要同时开启 Break 和对应 Slide 开关。", MainGUI.Style.Muted);
         I18n.Label(AutoPlay.ClassicMode ? "当前行为：原版全自动（所有音符自动判定）" : "当前行为：仅判定（需要自己打，命中后才套用判定）", MainGUI.Style.Muted);
         I18n.Label("当前模式：" + ModeName(AutoPlay.autoPlayMode), MainGUI.Style.Text);
 
@@ -118,6 +119,12 @@ public class CustomAutoPlayPanel
             config.FullComboPlusGreat = great;
             SaveAndRefresh();
         }
+        bool greatIncludeSlide = config.FullComboPlusGreatIncludeSlide;
+        if (SlideRow("fcp_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        {
+            config.FullComboPlusGreatIncludeSlide = greatIncludeSlide;
+            SaveAndRefresh();
+        }
         bool includeBreak = config.FullComboPlusIncludeBreak;
         if (BreakRow("fcp_break", "包含 Break（绝赞音符）", ref includeBreak))
         {
@@ -144,10 +151,22 @@ public class CustomAutoPlayPanel
             config.FullComboGreat = great;
             SaveAndRefresh();
         }
+        bool greatIncludeSlide = config.FullComboGreatIncludeSlide;
+        if (SlideRow("fc_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        {
+            config.FullComboGreatIncludeSlide = greatIncludeSlide;
+            SaveAndRefresh();
+        }
         int good = config.FullComboGood;
         if (IntRow("fc_good", "Good 数量", ref good))
         {
             config.FullComboGood = good;
+            SaveAndRefresh();
+        }
+        bool goodIncludeSlide = config.FullComboGoodIncludeSlide;
+        if (SlideRow("fc_good_slide", "Good 包含 Slide（滑动）", ref goodIncludeSlide))
+        {
+            config.FullComboGoodIncludeSlide = goodIncludeSlide;
             SaveAndRefresh();
         }
         bool includeBreak = config.FullComboIncludeBreak;
@@ -176,16 +195,34 @@ public class CustomAutoPlayPanel
             config.RandomGreat = great;
             SaveAndRefresh();
         }
+        bool greatIncludeSlide = config.RandomGreatIncludeSlide;
+        if (SlideRow("rnd_g_slide", "Great 包含 Slide（滑动）", ref greatIncludeSlide))
+        {
+            config.RandomGreatIncludeSlide = greatIncludeSlide;
+            SaveAndRefresh();
+        }
         int good = config.RandomGood;
         if (IntRow("rnd_good", "Good 数量", ref good))
         {
             config.RandomGood = good;
             SaveAndRefresh();
         }
+        bool goodIncludeSlide = config.RandomGoodIncludeSlide;
+        if (SlideRow("rnd_good_slide", "Good 包含 Slide（滑动）", ref goodIncludeSlide))
+        {
+            config.RandomGoodIncludeSlide = goodIncludeSlide;
+            SaveAndRefresh();
+        }
         int miss = config.RandomMiss;
         if (IntRow("rnd_miss", "Miss 数量", ref miss))
         {
             config.RandomMiss = miss;
+            SaveAndRefresh();
+        }
+        bool missIncludeSlide = config.RandomMissIncludeSlide;
+        if (SlideRow("rnd_miss_slide", "Miss 包含 Slide（滑动）", ref missIncludeSlide))
+        {
+            config.RandomMissIncludeSlide = missIncludeSlide;
             SaveAndRefresh();
         }
         bool includeBreak = config.RandomIncludeBreak;
@@ -303,6 +340,17 @@ public class CustomAutoPlayPanel
         }
         GUILayout.EndHorizontal();
         return changed;
+    }
+
+    private static bool SlideRow(string key, string label, ref bool value)
+    {
+        bool newValue = I18n.Toggle(value, label, MainGUI.Style.Toggle, GUILayout.Height(26f));
+        if (newValue != value)
+        {
+            value = newValue;
+            return true;
+        }
+        return false;
     }
 
     private static bool BreakRow(string key, string label, ref bool value)

@@ -194,6 +194,54 @@ public class AutoPlay
         return type.isBreak() || type.isExBreak();
     }
 
+    private static bool GetGreatIncludeSlide(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.RandomFullComboPlus => config.FullComboPlusGreatIncludeSlide,
+            AutoPlayMode.RandomFullCombo => config.FullComboGreatIncludeSlide,
+            AutoPlayMode.Random => config.RandomGreatIncludeSlide,
+            _ => false
+        };
+    }
+
+    private static bool GetGoodIncludeSlide(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.RandomFullCombo => config.FullComboGoodIncludeSlide,
+            AutoPlayMode.Random => config.RandomGoodIncludeSlide,
+            _ => false
+        };
+    }
+
+    private static bool GetMissIncludeSlide(AutoPlayMode mode, CustomAutoPlayConfig config)
+    {
+        return mode switch
+        {
+            AutoPlayMode.Random => config.RandomMissIncludeSlide,
+            _ => false
+        };
+    }
+
+    private static List<NoteData> BuildCategoryPool(List<NoteData> pool, HashSet<int> used, bool includeSlide)
+    {
+        List<NoteData> result = new List<NoteData>(pool.Count);
+        foreach (NoteData note in pool)
+        {
+            if (used.Contains(note.indexNote))
+            {
+                continue;
+            }
+            if (!includeSlide && IsSlideNote(note))
+            {
+                continue;
+            }
+            result.Add(note);
+        }
+        return result;
+    }
+
     private static NoteJudge.ETiming PickSmallPerfect(System.Random random)
     {
         return SmallPerfectTimings[random.Next(SmallPerfectTimings.Length)];
@@ -285,14 +333,7 @@ public class AutoPlay
         }
 
         GetCounts(autoPlayMode, config, out int perfect, out int great, out int good, out int miss);
-        int remaining = pool.Count;
         perfect = Math.Min(perfect, perfectPool.Count);
-        remaining -= perfect;
-        great = Math.Min(great, remaining);
-        remaining -= great;
-        good = Math.Min(good, remaining);
-        remaining -= good;
-        miss = Math.Min(miss, remaining);
 
         System.Random random = new System.Random(unchecked(Environment.TickCount * 31 + monitorId * 977 + _planRevision * 7919 + _planSeed++));
 
@@ -313,29 +354,34 @@ public class AutoPlay
             used.Add(note.indexNote);
         }
 
-        List<NoteData> otherPool = new List<NoteData>(pool.Count - perfect);
-        foreach (NoteData note in pool)
-        {
-            if (!used.Contains(note.indexNote))
-            {
-                otherPool.Add(note);
-            }
-        }
-        Shuffle(otherPool, random);
-
-        int index = 0;
+        List<NoteData> greatPool = BuildCategoryPool(pool, used, GetGreatIncludeSlide(autoPlayMode, config));
+        Shuffle(greatPool, random);
+        great = Math.Min(great, greatPool.Count);
         for (int i = 0; i < great; i++)
         {
-            plan.Timings[otherPool[index++].indexNote] = PickGreat(random);
+            NoteData note = greatPool[i];
+            plan.Timings[note.indexNote] = PickGreat(random);
+            used.Add(note.indexNote);
         }
+
+        List<NoteData> goodPool = BuildCategoryPool(pool, used, GetGoodIncludeSlide(autoPlayMode, config));
+        Shuffle(goodPool, random);
+        good = Math.Min(good, goodPool.Count);
         for (int i = 0; i < good; i++)
         {
-            plan.Timings[otherPool[index++].indexNote] = PickGood(random);
+            NoteData note = goodPool[i];
+            plan.Timings[note.indexNote] = PickGood(random);
+            used.Add(note.indexNote);
         }
+
+        List<NoteData> missPool = BuildCategoryPool(pool, used, GetMissIncludeSlide(autoPlayMode, config));
+        Shuffle(missPool, random);
+        miss = Math.Min(miss, missPool.Count);
         for (int i = 0; i < miss; i++)
         {
-            plan.Timings[otherPool[index++].indexNote] = NoteJudge.ETiming.TooLate;
+            plan.Timings[missPool[i].indexNote] = NoteJudge.ETiming.TooLate;
         }
+
         foreach (NoteData note in notes)
         {
             if (!plan.Timings.ContainsKey(note.indexNote))

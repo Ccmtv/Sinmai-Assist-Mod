@@ -219,13 +219,19 @@ public class MainConfig
 
 		public int FullComboPlusGreat { get; set; }
 
+		public bool FullComboPlusGreatIncludeSlide { get; set; } = true;
+
 		public bool FullComboPlusIncludeBreak { get; set; }
 
 		public int FullComboSmallPerfect { get; set; }
 
 		public int FullComboGreat { get; set; }
 
+		public bool FullComboGreatIncludeSlide { get; set; } = true;
+
 		public int FullComboGood { get; set; }
+
+		public bool FullComboGoodIncludeSlide { get; set; } = true;
 
 		public bool FullComboIncludeBreak { get; set; }
 
@@ -233,9 +239,15 @@ public class MainConfig
 
 		public int RandomGreat { get; set; }
 
+		public bool RandomGreatIncludeSlide { get; set; } = true;
+
 		public int RandomGood { get; set; }
 
+		public bool RandomGoodIncludeSlide { get; set; } = true;
+
 		public int RandomMiss { get; set; }
+
+		public bool RandomMissIncludeSlide { get; set; } = true;
 
 		public bool RandomIncludeBreak { get; set; }
 	}
