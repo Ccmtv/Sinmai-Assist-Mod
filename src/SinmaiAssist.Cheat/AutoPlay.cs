@@ -1092,6 +1092,12 @@ public class AutoPlay
         }
         if (IsCustomMode(autoPlayMode))
         {
+            // 自定义模式必须命中预先分配好的方案；方案缺失时绝不能退回随机判定，
+            // 否则 Slide / 星形头可能意外变成 Great / Good。
+            if (__result != NoteJudge.ETiming.End && __result != NoteJudge.ETiming.TooLate && __result != NoteJudge.ETiming.TooFast)
+            {
+                __result = NoteJudge.ETiming.Critical;
+            }
             return;
         }
         NoteJudge.ETiming timing = __result;
