@@ -34,7 +34,7 @@ public class ShowVersionInfo
 	public static void OnGUI()
 	{
 		VersionText.Clear();
-		VersionText.AppendLine("Sinmai-Assist 1.1.0 (787a437)");
+		VersionText.AppendLine("Sinmai-Assist 1.1.1 (787a437)");
 		VersionText.AppendLine("Powered by MelonLoader");
 		VersionText.AppendLine($"客户端版本：{SinmaiAssist.GameID} {SinmaiAssist.GameVersion}");
 		VersionText.AppendLine("数据版本：" + Singleton<SystemConfig>.Instance.config.dataVersionInfo.versionNo.versionString + " " + Singleton<SystemConfig>.Instance.config.dataVersionInfo.versionNo.releaseNoAlphabet);

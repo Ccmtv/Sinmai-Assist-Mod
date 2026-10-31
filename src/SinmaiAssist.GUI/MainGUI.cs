@@ -66,7 +66,7 @@ public class MainGUI
 
         Rect header = new Rect(panel.x, panel.y, panel.width, 62f);
         UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 11f, 240f, 24f), "Sinmai-Assist", Style.HeaderTitle);
-        UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 35f, 230f, 14f), I18n.T("maimai DX 助手 · 1.1.0"), Style.HeaderSub);
+        UnityEngine.GUI.Label(new Rect(header.x + 20f, header.y + 35f, 230f, 14f), I18n.T("maimai DX 助手 · 1.1.1"), Style.HeaderSub);
         if (SinmaiAssist.MainConfig.ModSetting.SafeMode)
         {
             UnityEngine.GUI.Label(new Rect(panel.xMax - 118f, panel.y + 14f, 58f, 20f), I18n.T("安全模式"), Style.Badge);
